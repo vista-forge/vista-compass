@@ -17,7 +17,17 @@ vista-meta `docs/releases/data-v1-derived.json`; fetch-verify it, **never
 build or re-derive it here** — consumers do not re-derive summaries/indexes)
 + `ai-manifest.json` as the self-describing catalog; TSVs stay the model of
 record. Predecessor: `vista-meta/vscode-extension/` (0.2.0,
-frozen at parity per the proposal). **Org note:** non-waterline repo (no
+frozen at parity per the proposal). **CLEAN-ROOM RULE (owner directive): the
+predecessor is a behavioral reference, never a code source — do NOT read,
+port, or adapt anything from `vista-meta/vscode-extension/src/`.** UX parity
+comes from its docs (`vista-meta/docs/guides/vscode-extension-internals.md`,
+`routine-situational-awareness.md`, `vista-vscode-guide.md`; the guide
+walkthrough is the P3 acceptance test), and its known gotchas are re-encoded
+here as TDD test cases FIRST: bare-vs-caret global names (`routine-globals`
+stores `DPT`, hovers see `^DPT`), `files.global_root` normalization (`^DD("IX",`
+→ `DD`), XINDEX `line_text` holding line NUMBERS as text. Everything here is
+written test-first against the published contracts, version-pinned, ts-ci
+gated. **Org note:** non-waterline repo (no
 `m`/`v` layer artifact — it never touches an engine); per-repo memory lives in
 `docs/memory/` per `~/vista-forge/CLAUDE.md`, and the org increment protocol
 applies.
