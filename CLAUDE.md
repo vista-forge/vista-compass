@@ -12,9 +12,11 @@ diagnostics, and bridge-powered "documented in N docs" jumps into its twin
 prerequisites, deep-link contract). Engine decision (P0, recorded there §11):
 **`node:sqlite`** — extension host ≥ VSCode 1.125 (Node 24), FTS5 in-box, no
 native deps; wrap it behind the store interface. Data = **meta.db** (85 MB
-generated SQLite projection; `make meta-db` in vista-meta, release asset at
-the next data tag) + `ai-manifest.json` as the self-describing catalog; TSVs
-stay the model of record. Predecessor: `vista-meta/vscode-extension/` (0.2.0,
+generated SQLite projection, a **published data-v1 release asset** — shas in
+vista-meta `docs/releases/data-v1-derived.json`; fetch-verify it, **never
+build or re-derive it here** — consumers do not re-derive summaries/indexes)
++ `ai-manifest.json` as the self-describing catalog; TSVs stay the model of
+record. Predecessor: `vista-meta/vscode-extension/` (0.2.0,
 frozen at parity per the proposal). **Org note:** non-waterline repo (no
 `m`/`v` layer artifact — it never touches an engine); per-repo memory lives in
 `docs/memory/` per `~/vista-forge/CLAUDE.md`, and the org increment protocol

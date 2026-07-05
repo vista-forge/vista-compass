@@ -26,9 +26,11 @@ Everything 0.2.0 does (routine sidebar, callers/callees/globals/XINDEX, the
 ## Data
 
 Consumes the **vista-meta `data-vN` release** via **meta.db** (the generated
-SQLite projection: 24 typed TSV tables + entity bridge + join views), with
-`ai-manifest.json` as the self-describing catalog and the release manifest as
-the provenance pin. The TSVs remain the model of record.
+SQLite projection: 24 typed TSV tables + entity bridge + join views), which is
+itself a **published release asset** (sha-recorded in vista-meta's
+`docs/releases/data-v1-derived.json`) — fetched and verified, never re-derived
+here. `ai-manifest.json` is the self-describing catalog and the release
+manifest the provenance pin. The TSVs remain the model of record.
 
 ## Place in the org
 
