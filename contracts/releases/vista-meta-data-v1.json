@@ -1,0 +1,20 @@
+{
+  "comment": "Pinned release record for the vista-meta data-v1 derived assets. Compass fetch-verifies these published artifacts and never re-derives them (proposal §3.1). Shas copied from vista-meta docs/releases/data-v1-derived.json; update only by re-pinning against a new published release.",
+  "repo": "rafael5/vista-meta",
+  "tag": "data-v1",
+  "content_hash": "23d037f1e08adc206d251eea9adb4ec62051032c06b593737bebfcaf67e4c754",
+  "files": {
+    "vista-meta-data-v1.db": {
+      "bytes": 93822976,
+      "sha256": "481dba37d1074805a397666868fcc650bdda1b642dcb1efadd566360eea2cb83"
+    },
+    "entity-bridge.meta.json": {
+      "bytes": 4043,
+      "sha256": "49807dec895889169429307e570c3e861c5bdd79878271f3e38154f1d27c2d5a"
+    },
+    "entity-bridge.tsv": {
+      "bytes": 438639,
+      "sha256": "bae06cd5c15d625d5fe3d52be367d7190db3fc131d602a7c6a4af9bd8c07839b"
+    }
+  }
+}
