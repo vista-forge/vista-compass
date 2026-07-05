@@ -1,61 +1,16 @@
-name: CI
+name: ci
 
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
 
-permissions:
-  contents: read
-
+# Non-waterline TS repo — earns the org's TypeScript class gate by calling the
+# central reusable (one source of truth in vista-forge/.github; per-repo YAML
+# cannot drift). Node version comes from .node-version (24 — the VSCode
+# extension-host / node:sqlite floor, P0 of vista-atlas-and-compass-de-novo).
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.x, 24.x]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install (frozen lockfile)
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Type check
-        run: npm run typecheck
-
-      - name: Test with coverage
-        run: npm run test:cov
-
-      - name: Audit (high+ only — blocking)
-        run: npm run audit
-
-      - name: Build
-        run: npm run build
-
-  publish-coverage:
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run test:cov
-      - uses: actions/upload-artifact@v4
-        with:
-          name: coverage-lcov
-          path: coverage/lcov.info
-          retention-days: 14
+  ci:
+    uses: vista-forge/.github/.github/workflows/ts-ci.yml@main
+    with:
+      coverage-floor: 90
