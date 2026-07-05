@@ -1,0 +1,111 @@
+{
+  "comment": "Twin-link contract v1 — the versioned seam between Vista Atlas and Vista Compass (proposal §6.1). Registered commands + URI handlers, soft-dependency: the ID crosses the boundary, never the data. Both extensions implement handlers against THIS artifact and test against it. Frozen at P1 (2026-07-05); any change bumps the version.",
+  "contract": "twin-link",
+  "version": 1,
+  "extensions": {
+    "atlas": {
+      "extensionId": "vista-forge.vista-atlas",
+      "uriAuthority": "vista-forge.vista-atlas"
+    },
+    "compass": {
+      "extensionId": "vista-forge.vista-compass",
+      "uriAuthority": "vista-forge.vista-compass"
+    }
+  },
+  "entityIdFormat": "<entity_type>:<canonical_name>",
+  "entityTypes": [
+    "build",
+    "fileman_file",
+    "global",
+    "hl7_segment",
+    "mail_group",
+    "option",
+    "package_namespace",
+    "routine",
+    "rpc"
+  ],
+  "citations": {
+    "vdocs": {
+      "pattern": "^vdocs://section/(.+)$",
+      "example": "vdocs://section/<section_id>"
+    },
+    "vista-meta": {
+      "pattern": "^vista-meta (data-v\\d+) · ([^·]+?\\.tsv) · ([^=·]+)=(.+)$",
+      "example": "vista-meta data-v1 · code-model/rpcs.tsv · name=ORWPT SELECT"
+    }
+  },
+  "commands": {
+    "vistaCompass.lookup": {
+      "implementedBy": "compass",
+      "uriPath": "/lookup",
+      "params": {
+        "kind": {
+          "type": "string",
+          "required": true,
+          "enum": ["routine", "rpc", "option", "protocol", "global", "file", "package"]
+        },
+        "key": { "type": "string", "required": true }
+      }
+    },
+    "vistaCompass.openEntity": {
+      "implementedBy": "compass",
+      "uriPath": "/openEntity",
+      "params": {
+        "entity_id": { "type": "string", "required": true, "format": "entity_id" }
+      }
+    },
+    "vistaCompass.search": {
+      "implementedBy": "compass",
+      "uriPath": "/search",
+      "params": {
+        "query": { "type": "string", "required": true }
+      }
+    },
+    "vistaCompass.pins": {
+      "implementedBy": "compass",
+      "params": {},
+      "returns": { "tag": "string", "content_hash": "string" }
+    },
+    "vistaAtlas.openDoc": {
+      "implementedBy": "atlas",
+      "uriPath": "/openDoc",
+      "params": {
+        "doc_key": { "type": "string", "required": true }
+      }
+    },
+    "vistaAtlas.openSection": {
+      "implementedBy": "atlas",
+      "uriPath": "/openSection",
+      "params": {
+        "section_id": { "type": "string", "required": true }
+      }
+    },
+    "vistaAtlas.openEntity": {
+      "implementedBy": "atlas",
+      "uriPath": "/openEntity",
+      "params": {
+        "entity_id": { "type": "string", "required": true, "format": "entity_id" }
+      }
+    },
+    "vistaAtlas.search": {
+      "implementedBy": "atlas",
+      "uriPath": "/search",
+      "params": {
+        "query": { "type": "string", "required": true },
+        "filters": { "type": "object", "required": false }
+      }
+    },
+    "vistaAtlas.pins": {
+      "implementedBy": "atlas",
+      "params": {},
+      "returns": { "tag": "string", "corpus_content_hash": "string" }
+    },
+    "vista.openCitation": {
+      "implementedBy": "both",
+      "uriPath": "/openCitation",
+      "params": {
+        "text": { "type": "string", "required": true }
+      }
+    }
+  }
+}
