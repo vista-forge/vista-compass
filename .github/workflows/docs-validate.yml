@@ -8,3 +8,5 @@ on:
 jobs:
   validate:
     uses: vista-forge/.github/.github/workflows/validate.yml@main
+    with:
+      layout_path: "docs"

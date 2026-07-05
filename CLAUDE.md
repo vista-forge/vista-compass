@@ -34,7 +34,7 @@ make audit       # npm audit (high+ severity blocks)
 make check       # lint + typecheck + test-cov + audit (full gate, same as CI)
 make build       # tsc → dist/
 make run         # node --import tsx src/index.ts (dev run, no build)
-make log MSG="…" # append a dated entry to docs/build-log.md
+make log MSG="…" # append a dated entry to docs/changelog.md
 make push        # check + git push origin main
 make pull        # git pull origin main
 ```
@@ -64,7 +64,7 @@ src/
   <module>.ts        # sibling modules; one concern per file
   <module>.test.ts
 docs/
-  build-log.md       # chronological per-feature notes (see "Build log" below)
+  changelog.md       # chronological per-feature notes (see "Build log" below)
 dist/                # tsc output (gitignored)
 ```
 
@@ -105,14 +105,14 @@ For CLI projects, add `src/cli.ts` with a `#!/usr/bin/env node` shebang, declare
 - Small commits + `make push` after each one means CI catches regressions in minutes, not hours, and rebases / cherry-picks stay easy.
 
 ## Build log
-The project keeps a chronological narrative at `docs/build-log.md` —
+The project keeps a chronological narrative at `docs/changelog.md` —
 per-feature notes, decisions made during implementation, and any drift
 from the spec or roadmap. Update it whenever you land something
 non-trivial, before pushing. Cheap entries beat lost context.
 
 ```bash
 make log MSG="add greet() with TDD-driven tests; baseline coverage 91%"
-git add docs/build-log.md
+git add docs/changelog.md
 git commit -m "docs: log greet() landing"
 ```
 

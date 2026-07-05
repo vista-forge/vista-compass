@@ -47,12 +47,12 @@ run:
 clean:
 	rm -rf dist coverage .nyc_output *.tsbuildinfo
 
-# Append a dated entry to docs/build-log.md.
+# Append a dated entry to docs/changelog.md.
 # Usage: make log MSG="what changed and why"
 log:
 	@if [ -z "$(MSG)" ]; then echo 'usage: make log MSG="..."'; exit 1; fi
-	@printf '\n## %s\n\n%s\n' "$$(date -u +%Y-%m-%d)" "$(MSG)" >> docs/build-log.md
-	@echo "appended to docs/build-log.md"
+	@printf '\n## %s\n\n%s\n' "$$(date -u +%Y-%m-%d)" "$(MSG)" >> docs/changelog.md
+	@echo "appended to docs/changelog.md"
 
 pull:
 	git pull origin main

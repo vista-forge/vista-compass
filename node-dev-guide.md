@@ -21,7 +21,7 @@ References:
 │   ├── index.test.ts      # tests next to code (Node convention)
 │   └── ...
 ├── docs/
-│   └── build-log.md       # chronological per-feature notes
+│   └── changelog.md       # chronological per-feature notes
 ├── dist/                  # tsc output (gitignored)
 ├── package.json
 ├── package-lock.json      # commit alongside package.json
@@ -331,7 +331,7 @@ the dist is fresh on every release.
   a `CLAUDE.md` for the agent (workflow, conventions, project layout).
 - **Per public function/class**: TSDoc comments. They show in IDEs and
   feed `typedoc` if you generate API docs.
-- **Build log**: `docs/build-log.md` is the chronological narrative.
+- **Build log**: `docs/changelog.md` is the chronological narrative.
   Update it as you land features. The git log is per-commit; the build
   log is per-decision. Both are useful and they don't duplicate.
 - **`SPEC.md` / `STATUS.md`**: optional, but extremely useful for
@@ -357,7 +357,7 @@ the dist is fresh on every release.
 - `.github/dependabot.yml` for weekly grouped dep updates
 - `direnv` `.envrc` adding `./node_modules/.bin` to PATH and loading
   `.env` if present
-- `docs/build-log.md` starter with a "how to use this log" section
+- `docs/changelog.md` starter with a "how to use this log" section
 - A first-class `CLAUDE.md` describing the workflow for the agent
 
 ## 16. New project setup
@@ -387,7 +387,7 @@ make push
 
 ## 17. Build log convention
 
-`docs/build-log.md` is a chronological narrative of *why* the project
+`docs/changelog.md` is a chronological narrative of *why* the project
 got to its current shape, in addition to the *what* in `git log`.
 
 Format: dated entries, each with a short heading and a few paragraphs.
