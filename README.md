@@ -6,11 +6,15 @@ measurably *is*.** The de-novo successor (v2) of vista-meta's in-repo
 [vista-atlas](https://github.com/vista-forge/vista-atlas) (what the documentation
 *says*); the two cross-link through the vdocs↔vista-meta entity bridge.
 
-> **Status: scaffold (2026-07-05).** The governing design is the proposal
+> **Status: P1 done, Compass side (2026-07-05).** The governing design is the proposal
 > [`vista-atlas-and-compass-de-novo.md`](https://github.com/rafael5/vista-meta/blob/main/docs/proposals/vista-atlas-and-compass-de-novo.md)
-> (in vista-meta's docs). P0 (engine spike) is done — **`node:sqlite`** in the
-> extension host (VSCode ≥ 1.125, Node 24), zero native dependencies. Next: P1
-> shared store, P3 Compass-v2 MVP at 0.2.0 parity.
+> (in vista-meta's docs). P0 (engine spike): **`node:sqlite`** in the
+> extension host (VSCode ≥ 1.125, Node 24), zero native dependencies. P1: the
+> embryonic **vista-store** lib (engine wrapper, release fetch/verify, meta.db
+> contract check) + the frozen **twin-link contract v1**
+> (`contracts/twin-link.v1.json`) live here — see
+> [`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md). Next: P3
+> Compass-v2 MVP at 0.2.0 parity.
 
 ## What it will do
 
