@@ -1,26 +1,50 @@
 /**
- * myproject — replace this comment with a one-line package summary.
+ * vista-compass — VSCode extension over the vista-meta data release
+ * (meta.db): what the VistA system measurably IS.
  *
- * Library entry point. Re-export the public API; keep implementation
- * in sibling modules so consumers can tree-shake what they don't use.
+ * This package root currently exports the embryonic **vista-store**
+ * shared library (proposal §6): the node:sqlite engine wrapper, release
+ * fetch/verify, the meta.db contract check, and the twin-link contract
+ * v1 seam. It extracts to a sibling repo when vista-atlas consumes it.
  */
 
-export interface GreetOptions {
-  /** Honorific to prepend (e.g. "Dr."). Optional. */
-  readonly title?: string;
-}
-
-/**
- * Build a greeting for a given name.
- *
- * The function is intentionally trivial — it exists to demonstrate the
- * test idiom (table-driven, `node:test`, type-safe options object) so
- * a new clone of this template has something green to start from.
- */
-export function greet(name: string, options: GreetOptions = {}): string {
-  if (name.length === 0) {
-    throw new Error('greet: name must not be empty');
-  }
-  const prefix = options.title ? `${options.title} ` : '';
-  return `Hello, ${prefix}${name}!`;
-}
+export {
+  checkMetaDb,
+  type ContractExpectation,
+  type ContractReport,
+  META_DB_VIEWS,
+  type MetaDbCatalog,
+  tsvTableName,
+} from './store/contract.js';
+export { openStore, type SqlRow, type SqlValue, type Store } from './store/engine.js';
+export {
+  ensureAsset,
+  type EnsureAssetOptions,
+  type EnsureAssetResult,
+} from './store/fetch.js';
+export {
+  assetUrl,
+  loadReleaseRecord,
+  parseReleaseRecord,
+  type ReleaseRecord,
+} from './store/release.js';
+export {
+  type ExpectedFile,
+  sha256File,
+  verifyFile,
+  type VerifyResult,
+} from './store/verify.js';
+export {
+  buildDeepLink,
+  type Citation,
+  type CommandSpec,
+  loadTwinLinkContract,
+  type ParamSpec,
+  parseCitation,
+  parseDeepLink,
+  type ParsedDeepLink,
+  type Target,
+  type TwinLinkContract,
+  validatePayload,
+  type ValidationResult,
+} from './twinlink.js';
