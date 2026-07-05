@@ -2,7 +2,7 @@
 
 **A VSCode extension over the vista-meta data release — what the VistA system
 measurably *is*.** The de-novo successor (v2) of vista-meta's in-repo
-`vscode-extension/` (VistA Compass 0.2.0), twinned with
+`vscode-extension/` (VistA Compass 0.2.0; and, with its twin, of the deleted vista-info-hub), twinned with
 [vista-atlas](https://github.com/vista-forge/vista-atlas) (what the documentation
 *says*); the two cross-link through the vdocs↔vista-meta entity bridge.
 
