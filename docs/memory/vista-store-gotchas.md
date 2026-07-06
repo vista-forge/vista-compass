@@ -55,6 +55,20 @@ Durable lessons from the P1 vista-store build (2026-07-05):
   loads foreign MUMPS extensions that clash (duplicate commands,
   competing definition providers).
 
+- **All routine-source navigation needs `vistaCompass.vistaMHostPath`:**
+  meta.db carries only container-side `source_path`s
+  (`/opt/VistA-M/…`), so *nothing* can open a routine's source without
+  the host mirror configured — callee/caller sidebar clicks,
+  go-to-definition, find-references, workspace symbols, and the
+  find-RPC/option pickers all resolve through
+  `resolveSourcePath` → host root. When it's unset the right UX is a
+  one-time "set vistaMHostPath" hint, never a silent dead-click (the
+  bug fixed 2026-07-06, v0.4.1). Tree-item nav commands resolve
+  **lazily** via the registered `vistaCompass.openRoutine` (args carry
+  `{routine, tag}`) — do NOT read target files eagerly per sidebar
+  render. Callee rows pass their `tag` so the jump lands on the
+  `TAG^RTN` entry point, like a Tags-row jump.
+
 **Why:** all of these bit during P1/P3 (red gates / failed runs).
 **How to apply:** don't "fix" the row-copy in engine.ts as an
 optimization without re-running the deepEqual tests; when adding a new
