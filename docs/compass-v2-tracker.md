@@ -17,7 +17,7 @@ org Tier-D rule when the effort lands.
 | P1 | `vista-store` shared lib + twin-link contract v1 | ✅ **Compass side done 2026-07-05** — see below |
 | P2 | Atlas MVP (vdocs-web parity) | not started (vista-atlas repo) |
 | P3 | Compass v2 MVP (0.2.0 parity on meta.db) | ✅ **CLOSED 2026-07-05** — automated acceptance PASS + owner walkthrough PASS |
-| P4 | Full-scope surfaces | blocked on P3 (+ P-vdocs 1 for Atlas) |
+| P4 | Full-scope surfaces (Compass side) | ✅ **landed 2026-07-05** — smoke spot-check PASS; owner visual check pending (Atlas P4 blocked on P-vdocs 1) |
 | P5 | Twin-link features | blocked on P2+P3 |
 
 ## P1 — vista-store (started inside this repo per proposal §6)
@@ -88,9 +88,46 @@ bundle breaking on a top-level `import.meta.url`).
       uninstalling the superseded `rafael5.vista-compass@0.2.0` — v2
       keeps its identifiers by design, so they cannot coexist.)
 
-## P4 — next in this repo
+## P4 — Compass full-scope surfaces (landed 2026-07-05, v0.3.0)
 
-RPC/option/protocol first-class surfaces, package dashboard, workspace
-symbols (indexed `xindex_tags` prefix query), go-to-definition /
-references from `routine_calls`, XINDEX diagnostics (default off),
-"documented in N docs" bridge affordances (soft twin-link).
+All model queries TDD'd; ext layer stays a thin adapter; smoke
+extended and PASS in the installed VSCode against the real release.
+
+- [x] RPCs / Options / Protocols sidebar sections on the active routine
+      (`surfaces.ts`: per-routine queries; protocols keyed by
+      callee_routine with TAG^RTN labels).
+- [x] Workspace pickers: `vistaCompass.findRpc` / `findOption`
+      (prefix queries, capped 200) → open the implementing routine.
+- [x] Package dashboard webview (`vistaCompass.packageDashboard`):
+      namespace/prefixes/app_code/vdl_id, manifest stats, PIKS mix,
+      couplings both directions, routine leaderboard — pure escaped
+      HTML builder, tested.
+- [x] Language features: outline (DocumentSymbol from parseTags),
+      workspace symbols (NOCASE-indexed `xindex_tags` prefix query),
+      go-to-definition for TAG^RTN (tag line parsed from the target
+      host file — xindex_tags carries no line numbers), find-references
+      for a tag at column 0 (callers scanned, capped 50).
+- [x] XINDEX diagnostics behind `vistaCompass.xindexAsDiagnostics`
+      (default off per internals §7.3; numeric-line findings only).
+- [x] Bridge affordances: hover cards carry "documented in N docs"
+      (`mentionCount`; bridge global ids KEEP the caret — encoded as a
+      test) + per-file cross-PIKS / sensitive-fields drill-down
+      (`fieldPiksForFile`).
+- [x] **Smoke spot-check PASS** (§8 acceptance, machine-answer ↔ human
+      counterpart): bridge mentions (XPDUTL 107 / ^PRCA 15 + File 430),
+      outline tags, workspace symbols, definition into XPDUTL.m at the
+      BMES tag, P4 commands registered. v0.3.0 vsix installed.
+- [ ] Owner visual spot-check: reload window; try the RPC/option
+      pickers, the package dashboard on PRCA45PT, outline/Ctrl+T
+      symbols, Ctrl+Click a TAG^RTN, and (optionally) flip on
+      `vistaCompass.xindexAsDiagnostics`.
+
+Deferred (not in this phase): signature help (gated on the bake
+extracting formals — Track P-vista-meta 2); hard twin-link features
+(P5, needs vista-atlas); CodeLens/completion/status bar (Tier D).
+
+## P5 — next (needs vista-atlas P2)
+
+Twin-link features per contract v1: cross-jumps ("documented → Atlas"
+click-through), seeded search handoff, `vista.openCitation` routing,
+mutual-pin handshake, copy-citation everywhere.

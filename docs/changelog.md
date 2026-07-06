@@ -119,3 +119,20 @@ reload to see a CLI-installed extension, and the superseded 0.2.0
 predecessor had to be uninstalled — v2 keeps its view/command/settings
 identifiers by design, so the two cannot coexist (recorded in memory).
 Next: P4 surfaces.
+
+## 2026-07-05 — P4: full-scope surfaces (v0.3.0)
+
+**Done:** RPCs/Options/Protocols sidebar sections; findRpc/findOption
+pickers; package dashboard webview (tested pure-HTML builder); outline
++ workspace symbols (NOCASE tag index) + go-to-definition (tag line
+parsed from target source — xindex_tags has no line numbers) +
+find-references (callers scanned, capped); XINDEX diagnostics
+(setting-gated, default off); hover cards gained "documented in N
+docs" from the entity bridge (global ids keep the caret — new
+bare-vs-caret variant, TDD'd) and the field-PIKS drill-down. Smoke
+extended: 8 end-to-end checks PASS in the installed VSCode against the
+real release. Version 0.3.0 (predecessor froze at 0.2.0).
+
+**Deferred:** signature help (needs bake formals, Track P-vm 2); P5
+twin-link features (needs vista-atlas); Tier D (CodeLens, completion,
+status bar).
