@@ -114,6 +114,21 @@ export async function run(): Promise<void> {
     assert.ok(commands.includes(id), `command registered: ${id}`);
   }
 
+  // 8b. Sidebar callee row → jump to the callee's TAG^RTN entry point.
+  await vscode.commands.executeCommand('vistaCompass.openRoutine', {
+    routine: 'XPDUTL',
+    tag: 'BMES',
+  });
+  assert.match(
+    vscode.window.activeTextEditor?.document.fileName ?? '',
+    /XPDUTL\.m$/,
+    'callee jump opened XPDUTL.m',
+  );
+  assert.ok(
+    (vscode.window.activeTextEditor?.selection.active.line ?? 0) > 0,
+    'callee jump landed on the BMES tag, not line 1',
+  );
+
   // ── P5: the twin-link seam, exercised against the REAL Atlas twin ──
   // 9. The twin is present in this host.
   assert.ok(

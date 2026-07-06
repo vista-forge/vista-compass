@@ -1,6 +1,6 @@
 {
   "name": "vista-compass",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "VistA Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
   "main": "./dist/extension.cjs",

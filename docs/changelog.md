@@ -159,3 +159,14 @@ installed twin into a scratch extensions dir — full-real-extensions-dir
 runs picked up foreign MUMPS extensions and broke assertions.
 vista.openCitation is registered defensively (implementedBy both twins;
 duplicate registration would crash whichever activates second).
+
+## 2026-07-06 — sidebar: Callers/Callees rows jump to the routine (v0.4.1)
+
+Clicking a Callee now opens the target routine at its `TAG^RTN` entry
+point (e.g. `BMES^XPDUTL` → XPDUTL.m at the `BMES` tag), mirroring how
+a Tags row jumps to its line; Callers open the routine top. Both go
+through a new `vistaCompass.openRoutine` command that resolves lazily
+on click (no file I/O per sidebar render) and shows a helpful message
+when `vistaCompass.vistaMHostPath` is unset or the source isn't found —
+previously a callee click was a silent dead-click without that setting,
+and opened line 1 rather than the tag with it. Smoke extended.

@@ -17,15 +17,34 @@ interface RoutineItem extends vscode.QuickPickItem {
   readonly tag: string | undefined;
 }
 
-async function openPicked(store: Store, hostRoot: string, item: RoutineItem): Promise<void> {
-  const location = routineLocation(store, item.routine, item.tag, hostRoot);
-  if (location === undefined) {
+/**
+ * Open a measured routine at its `TAG^RTN` entry point (or the routine
+ * top when the tag is unknown), mirroring the Tags-section jump. Shared
+ * by the sidebar rows and the pickers. Explains the two ways it can
+ * fail instead of dead-clicking.
+ */
+async function openRoutineTarget(
+  store: Store,
+  hostRoot: string,
+  routine: string,
+  tag: string | undefined,
+): Promise<void> {
+  if (hostRoot === '') {
     vscode.window.showInformationMessage(
-      `VistA Compass: no host source for ${item.routine} — set vistaCompass.vistaMHostPath.`,
+      'VistA Compass: set vistaCompass.vistaMHostPath to jump to routine source.',
     );
     return;
   }
+  const location = routineLocation(store, routine, tag, hostRoot);
+  if (location === undefined) {
+    vscode.window.showInformationMessage(`VistA Compass: no host source found for ${routine}.`);
+    return;
+  }
   await vscode.window.showTextDocument(location.uri, { selection: location.range });
+}
+
+function openPicked(store: Store, hostRoot: string, item: RoutineItem): Promise<void> {
+  return openRoutineTarget(store, hostRoot, item.routine, item.tag);
 }
 
 async function runPicker(
@@ -58,6 +77,19 @@ export function registerCommands(
   getHostRoot: () => string,
 ): void {
   context.subscriptions.push(
+    // Sidebar Callers/Callees rows invoke this to jump to the routine
+    // (callees land on their TAG^RTN entry point, like a Tags-row jump).
+    vscode.commands.registerCommand(
+      'vistaCompass.openRoutine',
+      async (arg: { routine: string; tag?: string }) => {
+        const store = getStore();
+        if (store === undefined || arg?.routine === undefined) {
+          return;
+        }
+        await openRoutineTarget(store, getHostRoot(), arg.routine, arg.tag);
+      },
+    ),
+
     vscode.commands.registerCommand('vistaCompass.findRpc', async () => {
       const store = getStore();
       if (store === undefined) {

@@ -6,7 +6,7 @@
 
 import { readFileSync } from 'node:fs';
 import * as vscode from 'vscode';
-import { resolveSourcePath, routineNameFromPath, routineSourcePath } from '../model/lookup.js';
+import { routineNameFromPath } from '../model/lookup.js';
 import { parseTags, type TagLocation } from '../model/mumps.js';
 import { analyze, type RoutineInfo, type XindexSeverity } from '../model/routine.js';
 import { optionsForRoutine, protocolsInvoking, rpcsForRoutine } from '../model/surfaces.js';
@@ -129,14 +129,14 @@ export class RoutineTreeProvider implements vscode.TreeDataProvider<Node> {
     return this.section('Tags', tags.length, children);
   }
 
-  private openRoutineCommand(store: Store, routine: string): vscode.Command | undefined {
-    const hostRoot = this.getConfig().vistaMHostPath;
-    if (hostRoot === '') {
-      return undefined;
-    }
-    const source = routineSourcePath(store, routine);
-    const hostPath = source === undefined ? undefined : resolveSourcePath(source, hostRoot);
-    return hostPath === undefined ? undefined : openAtLine(hostPath, 1);
+  private openRoutineCommand(routine: string, tag: string | undefined): vscode.Command {
+    // Resolve-and-open lazily on click (no file I/O per render); the
+    // command reports a helpful message when navigation isn't possible.
+    return {
+      command: 'vistaCompass.openRoutine',
+      title: 'Open Routine',
+      arguments: [{ routine, ...(tag === undefined ? {} : { tag }) }],
+    };
   }
 
   private routineNodes(store: Store, info: RoutineInfo, tags: readonly TagLocation[]): Node[] {
@@ -166,10 +166,7 @@ export class RoutineTreeProvider implements vscode.TreeDataProvider<Node> {
       const children = info.callers.slice(0, topN).map((c) => {
         const item = new vscode.TreeItem(c.routine, vscode.TreeItemCollapsibleState.None);
         item.description = `${c.package}  ×${c.refCount}`;
-        const command = this.openRoutineCommand(store, c.routine);
-        if (command !== undefined) {
-          item.command = command;
-        }
+        item.command = this.openRoutineCommand(c.routine, undefined);
         return leaf(item);
       });
       nodes.push(this.section('Callers', info.callers.length, children));
@@ -179,10 +176,8 @@ export class RoutineTreeProvider implements vscode.TreeDataProvider<Node> {
       const children = info.callees.slice(0, topN).map((c) => {
         const item = new vscode.TreeItem(c.label, vscode.TreeItemCollapsibleState.None);
         item.description = `${c.kind}  ×${c.refCount}`;
-        const command = this.openRoutineCommand(store, c.routine);
-        if (command !== undefined) {
-          item.command = command;
-        }
+        // Jump to the callee's TAG^RTN entry point, like a Tags-row jump.
+        item.command = this.openRoutineCommand(c.routine, c.tag);
         return leaf(item);
       });
       nodes.push(this.section('Callees', info.callees.length, children));
