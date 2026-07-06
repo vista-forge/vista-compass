@@ -9,7 +9,7 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import * as vscode from 'vscode';
 import { checkMetaDb } from '../store/contract.js';
-import { type Store, openStore } from '../store/engine.js';
+import { openStore, type Store } from '../store/engine.js';
 import { ensureAsset } from '../store/fetch.js';
 import { loadReleaseRecord } from '../store/release.js';
 import { registerCommands } from './commands.js';

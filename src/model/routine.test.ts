@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { after, before, describe, it } from 'node:test';
-import { type Store, openStore } from '../store/engine.ts';
+import { openStore, type Store } from '../store/engine.ts';
 import { analyze, globalCard } from './routine.ts';
 
 /** Fixture meta.db slice with the P3 tables. */
@@ -222,22 +222,20 @@ describe('against the real data-v1 release (guide walkthrough facts)', () => {
     }
   });
 
-  it(
-    '^DPT resolves to File 2 PATIENT — PIKS P (the 0.2.0 headline hover)',
-    { skip: !existsSync(REAL_DB) },
-    () => {
-      const real = openStore(REAL_DB);
-      try {
-        const card = globalCard(real, 'DPT');
-        assert.ok(card);
-        const patient = card.files.find((f) => f.fileNumber === '2');
-        assert.ok(patient, 'File 2 in the card');
-        assert.equal(patient.fileName, 'PATIENT');
-        assert.equal(patient.piks?.cls, 'P');
-        assert.ok(card.routineCount > 100, `many consumers, got ${card.routineCount}`);
-      } finally {
-        real.close();
-      }
-    },
-  );
+  it('^DPT resolves to File 2 PATIENT — PIKS P (the 0.2.0 headline hover)', {
+    skip: !existsSync(REAL_DB),
+  }, () => {
+    const real = openStore(REAL_DB);
+    try {
+      const card = globalCard(real, 'DPT');
+      assert.ok(card);
+      const patient = card.files.find((f) => f.fileNumber === '2');
+      assert.ok(patient, 'File 2 in the card');
+      assert.equal(patient.fileName, 'PATIENT');
+      assert.equal(patient.piks?.cls, 'P');
+      assert.ok(card.routineCount > 100, `many consumers, got ${card.routineCount}`);
+    } finally {
+      real.close();
+    }
+  });
 });

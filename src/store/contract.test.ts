@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { after, before, describe, it } from 'node:test';
-import { META_DB_VIEWS, checkMetaDb, tsvTableName } from './contract.ts';
-import { type Store, openStore } from './engine.ts';
+import { checkMetaDb, META_DB_VIEWS, tsvTableName } from './contract.ts';
+import { openStore, type Store } from './engine.ts';
 
 describe('tsvTableName', () => {
   const cases: ReadonlyArray<{ readonly tsv: string; readonly table: string }> = [
@@ -134,28 +134,26 @@ const REAL_MANIFEST = join(
 );
 
 describe('checkMetaDb against the real data-v1 release', () => {
-  it(
-    'the published meta.db satisfies the full ai-manifest catalog',
-    { skip: !(existsSync(REAL_DB) && existsSync(REAL_MANIFEST)) },
-    async () => {
-      const { readFileSync } = await import('node:fs');
-      const manifest = JSON.parse(readFileSync(REAL_MANIFEST, 'utf8')) as {
-        tables: Record<string, { columns: string[] }>;
-      };
-      const store = openStore(REAL_DB);
-      try {
-        const report = checkMetaDb(store, {
-          tag: 'data-v1',
-          contentHash: '23d037f1e08adc206d251eea9adb4ec62051032c06b593737bebfcaf67e4c754',
-          catalog: { tables: manifest.tables },
-          requiredViews: META_DB_VIEWS,
-        });
-        assert.deepEqual(report.problems, []);
-        assert.equal(report.ok, true);
-        assert.equal(Object.keys(manifest.tables).length, 24);
-      } finally {
-        store.close();
-      }
-    },
-  );
+  it('the published meta.db satisfies the full ai-manifest catalog', {
+    skip: !(existsSync(REAL_DB) && existsSync(REAL_MANIFEST)),
+  }, async () => {
+    const { readFileSync } = await import('node:fs');
+    const manifest = JSON.parse(readFileSync(REAL_MANIFEST, 'utf8')) as {
+      tables: Record<string, { columns: string[] }>;
+    };
+    const store = openStore(REAL_DB);
+    try {
+      const report = checkMetaDb(store, {
+        tag: 'data-v1',
+        contentHash: '23d037f1e08adc206d251eea9adb4ec62051032c06b593737bebfcaf67e4c754',
+        catalog: { tables: manifest.tables },
+        requiredViews: META_DB_VIEWS,
+      });
+      assert.deepEqual(report.problems, []);
+      assert.equal(report.ok, true);
+      assert.equal(Object.keys(manifest.tables).length, 24);
+    } finally {
+      store.close();
+    }
+  });
 });

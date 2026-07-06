@@ -1,7 +1,7 @@
 {
   "name": "vista-compass",
   "version": "0.3.0",
-  "description": "Vista Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
+  "description": "Vista Compass — VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
   "main": "./dist/extension.cjs",
   "types": "./dist/index.d.ts",
@@ -44,16 +44,16 @@
   "license": "MIT",
   "author": "Rafael Richards",
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "@types/node": "^24.0.0",
+    "@biomejs/biome": "^2.5.2",
+    "@types/node": "^26.1.0",
     "@types/vscode": "^1.125.0",
     "@vscode/test-electron": "^3.0.0",
     "@vscode/vsce": "^3.9.2",
-    "c8": "^10.1.3",
+    "c8": "^11.0.0",
     "esbuild": "^0.28.1",
     "simple-git-hooks": "^2.11.1",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "^6.0.3"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run lint && npm run typecheck",
@@ -138,7 +138,7 @@
         "vistaCompass.vistaMHostPath": {
           "type": "string",
           "default": "",
-          "description": "Host directory mirroring the container /opt/VistA-M tree (e.g. ~/projects/vista-meta/vista/vista-m-host) \u2014 enables click-to-open on callers/callees."
+          "description": "Host directory mirroring the container /opt/VistA-M tree (e.g. ~/projects/vista-meta/vista/vista-m-host) — enables click-to-open on callers/callees."
         },
         "vistaCompass.topN": {
           "type": "number",

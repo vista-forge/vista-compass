@@ -10,7 +10,7 @@ import { mkdir, rename, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { type ReleaseRecord, assetUrl } from './release.js';
+import { assetUrl, type ReleaseRecord } from './release.js';
 import { verifyFile } from './verify.js';
 
 export interface EnsureAssetOptions {

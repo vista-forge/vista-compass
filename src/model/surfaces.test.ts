@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { after, before, describe, it } from 'node:test';
-import { type Store, openStore } from '../store/engine.ts';
+import { openStore, type Store } from '../store/engine.ts';
 import {
   optionsForRoutine,
   protocolsInvoking,

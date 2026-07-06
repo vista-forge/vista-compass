@@ -7,8 +7,8 @@
 import { readFileSync } from 'node:fs';
 import * as vscode from 'vscode';
 import { resolveSourcePath, routineNameFromPath, routineSourcePath } from '../model/lookup.js';
-import { type TagLocation, parseTags } from '../model/mumps.js';
-import { type RoutineInfo, type XindexSeverity, analyze } from '../model/routine.js';
+import { parseTags, type TagLocation } from '../model/mumps.js';
+import { analyze, type RoutineInfo, type XindexSeverity } from '../model/routine.js';
 import { optionsForRoutine, protocolsInvoking, rpcsForRoutine } from '../model/surfaces.js';
 import type { Store } from '../store/engine.js';
 

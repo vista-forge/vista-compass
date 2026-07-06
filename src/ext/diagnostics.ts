@@ -7,7 +7,7 @@
 
 import * as vscode from 'vscode';
 import { routineNameFromPath } from '../model/lookup.js';
-import { type XindexSeverity, analyze } from '../model/routine.js';
+import { analyze, type XindexSeverity } from '../model/routine.js';
 import type { Store } from '../store/engine.js';
 
 const SEVERITY: Record<XindexSeverity, vscode.DiagnosticSeverity> = {

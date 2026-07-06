@@ -9,18 +9,18 @@
  */
 
 export {
-  checkMetaDb,
   type ContractExpectation,
   type ContractReport,
+  checkMetaDb,
   META_DB_VIEWS,
   type MetaDbCatalog,
   tsvTableName,
 } from './store/contract.js';
 export { openStore, type SqlRow, type SqlValue, type Store } from './store/engine.js';
 export {
-  ensureAsset,
   type EnsureAssetOptions,
   type EnsureAssetResult,
+  ensureAsset,
 } from './store/fetch.js';
 export {
   assetUrl,
@@ -31,8 +31,8 @@ export {
 export {
   type ExpectedFile,
   sha256File,
-  verifyFile,
   type VerifyResult,
+  verifyFile,
 } from './store/verify.js';
 export {
   buildDeepLink,
@@ -40,11 +40,11 @@ export {
   type CommandSpec,
   loadTwinLinkContract,
   type ParamSpec,
+  type ParsedDeepLink,
   parseCitation,
   parseDeepLink,
-  type ParsedDeepLink,
   type Target,
   type TwinLinkContract,
-  validatePayload,
   type ValidationResult,
+  validatePayload,
 } from './twinlink.js';
