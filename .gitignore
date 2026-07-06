@@ -32,3 +32,4 @@ npm-debug.log*
 
 # OS
 Thumbs.db
+*.vsix

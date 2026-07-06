@@ -138,6 +138,27 @@ describe('classifyToken', () => {
     });
   }
 
+  // Numeric tags (the wireframe's 430/433) are real M labels: hoverable
+  // at column 0 and in TAG^RTN calls — but a bare number elsewhere is a
+  // literal, never a token (noise control).
+  const numericCases: ReadonlyArray<{
+    readonly name: string;
+    readonly line: string;
+    readonly col: number;
+    readonly kind: string | undefined;
+  }> = [
+    { name: 'numeric tag at column 0', line: '430 ; numeric tag', col: 1, kind: 'tag-def' },
+    { name: 'numeric TAG^RTN call', line: ' D 430^PRCA45PT', col: 4, kind: 'routine-call' },
+    { name: 'bare numeric literal stays quiet', line: ' S X=430', col: 6, kind: undefined },
+    { name: 'numeric after call verb stays quiet', line: ' D 430', col: 4, kind: undefined },
+  ];
+  for (const tc of numericCases) {
+    it(tc.name, () => {
+      const result = classifyToken(tc.line, tc.col, isRoutine);
+      assert.equal(result?.kind, tc.kind, JSON.stringify(result));
+    });
+  }
+
   it('global classification exposes the bare name for the joins', () => {
     const result = classifyToken(' S X=$G(^DPT(0))', 10, () => false);
     assert.equal(result?.kind, 'global');

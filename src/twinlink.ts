@@ -37,11 +37,15 @@ export interface TwinLinkContract {
   readonly commands: Readonly<Record<string, CommandSpec>>;
 }
 
-const ARTIFACT_URL = new URL('../contracts/twin-link.v1.json', import.meta.url);
-
-/** Load the frozen v1 contract artifact shipped with the package. */
-export function loadTwinLinkContract(): TwinLinkContract {
-  return JSON.parse(readFileSync(fileURLToPath(ARTIFACT_URL), 'utf8')) as TwinLinkContract;
+/**
+ * Load the frozen v1 contract artifact shipped with the package.
+ * Pass an explicit path in bundled (CJS) contexts where
+ * import.meta.url is unavailable.
+ */
+export function loadTwinLinkContract(path?: string): TwinLinkContract {
+  const artifactPath =
+    path ?? fileURLToPath(new URL('../contracts/twin-link.v1.json', import.meta.url));
+  return JSON.parse(readFileSync(artifactPath, 'utf8')) as TwinLinkContract;
 }
 
 export interface ValidationResult {

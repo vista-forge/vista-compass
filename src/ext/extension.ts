@@ -8,8 +8,10 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import * as vscode from 'vscode';
-import { checkMetaDb, ensureAsset, loadReleaseRecord, openStore } from '../index.js';
-import type { Store } from '../store/engine.js';
+import { checkMetaDb } from '../store/contract.js';
+import { type Store, openStore } from '../store/engine.js';
+import { ensureAsset } from '../store/fetch.js';
+import { loadReleaseRecord } from '../store/release.js';
 import { CompassHoverProvider } from './hover.js';
 import { RoutineTreeProvider, type TreeConfig } from './treeProvider.js';
 

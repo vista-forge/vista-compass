@@ -54,8 +54,10 @@ export interface Token {
 }
 
 const IDENT = '[%A-Za-z][A-Za-z0-9]*';
+// Labels can also be purely numeric (the wireframe's 430/433 tags).
+const LABEL = `(?:${IDENT}|\\d+)`;
 // Longest alternative first: TAG^RTN (optionally $$-prefixed), ^NAME, bare NAME.
-const TOKEN_RE = new RegExp(`(\\$\\$)?(${IDENT})\\^(${IDENT})|\\^(${IDENT})|(${IDENT})`, 'g');
+const TOKEN_RE = new RegExp(`(\\$\\$)?(${LABEL})\\^(${IDENT})|\\^(${IDENT})|(${LABEL})`, 'g');
 
 interface TokenMatch extends Token {
   readonly start: number;
@@ -160,6 +162,10 @@ export function classifyToken(
   }
   if (start === 0) {
     return { kind: 'tag-def', name: token.routine, token };
+  }
+  // A bare number anywhere else is a literal, never a token.
+  if (/^\d+$/.test(token.routine)) {
+    return undefined;
   }
   if (CALL_VERB_RE.test(line.slice(0, start)) || isRoutine(token.routine)) {
     return { kind: 'routine-call', name: token.routine, token };
