@@ -14,6 +14,7 @@
   "files": [
     "dist",
     "contracts",
+    "images",
     "language-configuration.json",
     "README.md",
     "LICENSE"
@@ -134,5 +135,6 @@
         }
       }
     }
-  }
+  },
+  "icon": "images/icon.png"
 }
