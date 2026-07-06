@@ -1,7 +1,7 @@
 {
   "name": "vista-compass",
   "version": "0.4.0",
-  "description": "Vista Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
+  "description": "VistA Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
   "main": "./dist/extension.cjs",
   "types": "./dist/index.d.ts",
@@ -63,7 +63,7 @@
     "type": "git",
     "url": "https://github.com/vista-forge/vista-compass"
   },
-  "displayName": "Vista Compass",
+  "displayName": "VistA Compass",
   "publisher": "vista-forge",
   "categories": [
     "Other"
@@ -110,7 +110,7 @@
       },
       {
         "command": "vistaCompass.findInDocs",
-        "title": "VistA Compass: Find in Docs (Vista Atlas)"
+        "title": "VistA Compass: Find in Docs (VistA Atlas)"
       }
     ],
     "menus": {
@@ -143,7 +143,7 @@
       }
     ],
     "configuration": {
-      "title": "Vista Compass",
+      "title": "VistA Compass",
       "properties": {
         "vistaCompass.dataPath": {
           "type": "string",

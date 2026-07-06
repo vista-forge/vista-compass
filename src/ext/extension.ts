@@ -54,13 +54,13 @@ async function acquireDbPath(context: vscode.ExtensionContext): Promise<string> 
   const result = await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: 'Vista Compass: verifying data release…',
+      title: 'VistA Compass: verifying data release…',
     },
     () => ensureAsset({ record, name: DB_ASSET, destDir: context.globalStorageUri.fsPath }),
   );
   if (result.status === 'downloaded') {
     vscode.window.showInformationMessage(
-      `Vista Compass: fetched and verified ${DB_ASSET} (${record.tag}).`,
+      `VistA Compass: fetched and verified ${DB_ASSET} (${record.tag}).`,
     );
   }
   return result.path;
@@ -88,7 +88,7 @@ async function openData(
   view.description = `${meta.get('tag') ?? 'unknown'} · ${hash.slice(0, 8)}`;
   if (!report.ok) {
     vscode.window.showWarningMessage(
-      `Vista Compass: data contract mismatch — ${report.problems.join('; ')}`,
+      `VistA Compass: data contract mismatch — ${report.problems.join('; ')}`,
     );
   }
 }

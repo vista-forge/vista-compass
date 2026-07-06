@@ -1,7 +1,7 @@
 /**
  * The twin-link seam, Compass side (proposal §6.1, contract v1):
  * Compass's own command surface + URI handler, the soft cross-jump
- * into Vista Atlas (presence-checked, degrades to Atlas search while
+ * into VistA Atlas (presence-checked, degrades to Atlas search while
  * Atlas's entity tier is pending), the Gate-R mutual-pin handshake,
  * and copy-citation. The ID crosses the boundary, never the data.
  */
@@ -30,7 +30,7 @@ export function atlasPresent(): boolean {
 async function atlasCommand(): Promise<(command: string, payload: unknown) => Thenable<unknown>> {
   const atlas = vscode.extensions.getExtension(ATLAS_ID);
   if (atlas === undefined) {
-    throw new Error('Vista Atlas is not installed');
+    throw new Error('VistA Atlas is not installed');
   }
   await atlas.activate();
   return (command, payload) => vscode.commands.executeCommand(command, payload);
@@ -40,7 +40,7 @@ async function atlasCommand(): Promise<(command: string, payload: unknown) => Th
 export async function openInAtlas(entityId: string, query: string): Promise<void> {
   if (!atlasPresent()) {
     vscode.window.showInformationMessage(
-      'Vista Compass: install the Vista Atlas twin to jump into the documentation.',
+      'VistA Compass: install the VistA Atlas twin to jump into the documentation.',
     );
     return;
   }
@@ -112,7 +112,7 @@ export async function pinsHandshake(
   }
   if (problems.length > 0) {
     vscode.window.showWarningMessage(
-      `Vista Compass: release-pair drift — ${problems.join('; ')}. Cross-links may mislead.`,
+      `VistA Compass: release-pair drift — ${problems.join('; ')}. Cross-links may mislead.`,
     );
   }
 }
@@ -160,7 +160,7 @@ async function lookupEntity(deps: TwinDeps, kind: BridgeEntityType, key: string)
     return;
   }
   vscode.window.showInformationMessage(
-    `Vista Compass: ${citationFor(store, kind, key)} (no navigable source for this kind)`,
+    `VistA Compass: ${citationFor(store, kind, key)} (no navigable source for this kind)`,
   );
 }
 
@@ -209,7 +209,7 @@ export function registerTwinLink(context: vscode.ExtensionContext, deps: TwinDep
       if (atlasPresent() && value !== '') {
         // The §6.1 seeded search handoff: one footer row to the twin.
         items.push({
-          label: `$(book) Search docs for "${value}" → Vista Atlas`,
+          label: `$(book) Search docs for "${value}" → VistA Atlas`,
           description: 'documented:',
           action: async () => {
             const run = await atlasCommand();
@@ -287,7 +287,7 @@ export function registerTwinLink(context: vscode.ExtensionContext, deps: TwinDep
           const link = parseDeepLink(contract, uri.toString());
           await vscode.commands.executeCommand(link.command, link.payload);
         } catch (err) {
-          vscode.window.showWarningMessage(`Vista Compass: bad deep link — ${String(err)}`);
+          vscode.window.showWarningMessage(`VistA Compass: bad deep link — ${String(err)}`);
         }
       },
     }),
@@ -308,7 +308,7 @@ export function registerTwinLink(context: vscode.ExtensionContext, deps: TwinDep
             const text = payload?.text ?? '';
             const citation = parseCitation(contract, text);
             if (citation === undefined) {
-              vscode.window.showInformationMessage(`Vista Compass: not a citation — ${text}`);
+              vscode.window.showInformationMessage(`VistA Compass: not a citation — ${text}`);
               return;
             }
             if (citation.source === 'vdocs') {
@@ -317,7 +317,7 @@ export function registerTwinLink(context: vscode.ExtensionContext, deps: TwinDep
                 await run('vistaAtlas.openSection', { section_id: citation.section_id });
               } else {
                 vscode.window.showInformationMessage(
-                  'Vista Compass: a vdocs citation — install Vista Atlas to open it.',
+                  'VistA Compass: a vdocs citation — install VistA Atlas to open it.',
                 );
               }
               return;
@@ -326,7 +326,7 @@ export function registerTwinLink(context: vscode.ExtensionContext, deps: TwinDep
             if (store !== undefined && kind !== undefined) {
               await lookupEntity(deps, kind, citation.value);
             } else {
-              vscode.window.showInformationMessage(`Vista Compass: measured citation — ${text}`);
+              vscode.window.showInformationMessage(`VistA Compass: measured citation — ${text}`);
             }
           },
         ),

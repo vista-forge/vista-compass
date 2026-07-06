@@ -8,7 +8,7 @@ import type { FieldPiks } from './package.js';
 import type { CallerEdge, GlobalCard, RoutineInfo } from './routine.js';
 
 export interface CardLinks {
-  /** Command URI: cross-jump into Vista Atlas (twin present). */
+  /** Command URI: cross-jump into VistA Atlas (twin present). */
   readonly atlas?: string;
   /** Command URI: copy the contract citation line. */
   readonly copyCitation?: string;

@@ -21,7 +21,7 @@ async function openPicked(store: Store, hostRoot: string, item: RoutineItem): Pr
   const location = routineLocation(store, item.routine, item.tag, hostRoot);
   if (location === undefined) {
     vscode.window.showInformationMessage(
-      `Vista Compass: no host source for ${item.routine} — set vistaCompass.vistaMHostPath.`,
+      `VistA Compass: no host source for ${item.routine} — set vistaCompass.vistaMHostPath.`,
     );
     return;
   }
@@ -118,7 +118,7 @@ export function registerCommands(
       }
       const view = packageOverview(store, pkg);
       if (view === undefined) {
-        vscode.window.showInformationMessage(`Vista Compass: no measured data for ${pkg}.`);
+        vscode.window.showInformationMessage(`VistA Compass: no measured data for ${pkg}.`);
         return;
       }
       const panel = vscode.window.createWebviewPanel(

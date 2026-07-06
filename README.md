@@ -1,12 +1,12 @@
-# Vista Compass
+# VistA Compass
 
 **X-ray vision for VistA code, inside VSCode — the code half of a
-two-extension pair.** Vista Compass shows what the VistA system *measurably
+two-extension pair.** VistA Compass shows what the VistA system *measurably
 is*: open any `.m` routine and instantly see who calls it, what it calls,
 which globals it touches and which FileMan files those are, whether patient
 data is involved, which RPCs and menu options enter through it, and what the
 static analyzer thinks of it. Its sibling extension,
-[**Vista Atlas**](https://github.com/vista-forge/vista-atlas), puts the VA
+[**VistA Atlas**](https://github.com/vista-forge/vista-atlas), puts the VA
 documentation library in the editor beside it — what the documentation
 *says* — and the two cross-link: hover a routine or global in Compass and
 jump straight to the manuals that document it; cite a measured fact from a
@@ -19,7 +19,7 @@ session, an XINDEX run, and a lot of grepping:
 
 > Hover `^DPT` → **File 2 PATIENT — PIKS P (Patient)** · 1,811 records ·
 > referenced by 3,000+ routines · documented in 120 docs → *click through to
-> the manuals in Vista Atlas*.
+> the manuals in VistA Atlas*.
 
 ## Why a VistA developer needs this
 
@@ -106,7 +106,7 @@ Routine and global cards also carry **"documented in N docs → Atlas"**
 - **Find references** — on a tag at column 0, lists every call site across
   the measured call graph.
 - **Search Measured Model** — one picker across routines, tags, RPCs, and
-  options, with a footer row that forwards your query into Vista Atlas doc
+  options, with a footer row that forwards your query into VistA Atlas doc
   search.
 - **Find RPC / Find Option** — name-prefix pickers over the full RPC/option
   registries; Enter opens the implementing routine.
@@ -115,7 +115,7 @@ Routine and global cards also carry **"documented in N docs → Atlas"**
 
 ### Package dashboard
 
-**Vista Compass: Package Dashboard** (defaults to the active routine's
+**VistA Compass: Package Dashboard** (defaults to the active routine's
 package): namespace, prefixes, `app_code`, VDL id, measured size, PIKS
 distribution of its shipped files, top inbound/outbound package couplings,
 and the routine leaderboard.
@@ -128,14 +128,14 @@ info).
 
 ### Deep links and cross-extension integration
 
-Fully optional — every twin feature degrades gracefully when Vista Atlas is
+Fully optional — every twin feature degrades gracefully when VistA Atlas is
 absent:
 
 - **Cross-jumps** from hover cards into the documentation.
 - **Citation routing** — `vista.openCitation` opens either citation format:
   `vista-meta data-v1 · code-model/rpcs.tsv · name=…` lands in the measured
   source; `vdocs://section/…` opens in Atlas.
-- **Deep links** — other tools (including Vista Atlas) can land Compass on
+- **Deep links** — other tools (including VistA Atlas) can land Compass on
   an exact target:
   - `vscode://vista-forge.vista-compass/lookup?kind=rpc&key=…`
   - `vscode://vista-forge.vista-compass/openEntity?entity_id=…`
@@ -157,7 +157,7 @@ absent:
 | **VistA Compass: Find RPC** | RPC picker → implementing routine |
 | **VistA Compass: Find Option** | Option picker → implementing routine |
 | **VistA Compass: Package Dashboard** | The per-package overview webview |
-| **VistA Compass: Find in Docs (Vista Atlas)** | Current token → docs search |
+| **VistA Compass: Find in Docs (VistA Atlas)** | Current token → docs search |
 | **VistA Compass: Refresh Routine Sidebar** | Re-read the active routine |
 | **VistA Compass: Reload Data** | Re-verify and reopen the data release |
 
@@ -170,7 +170,7 @@ absent:
    it is fully offline.
 3. Point `vistaCompass.vistaMHostPath` at a VistA-M source checkout to
    enable all click-to-open navigation.
-4. Install [Vista Atlas](https://github.com/vista-forge/vista-atlas) to
+4. Install [VistA Atlas](https://github.com/vista-forge/vista-atlas) to
    light up the documentation cross-links.
 
 ## Settings

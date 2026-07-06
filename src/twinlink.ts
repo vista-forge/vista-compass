@@ -1,6 +1,6 @@
 /**
  * Twin-link contract v1 (proposal §6.1) — the versioned seam between
- * Vista Atlas and Vista Compass. The contract lives as data in
+ * VistA Atlas and VistA Compass. The contract lives as data in
  * contracts/twin-link.v1.json; this module loads it and gives both
  * twins the same payload validation, citation parsing, and
  * vscode:// deep-link building/parsing, so the two command surfaces
