@@ -20,7 +20,18 @@ Durable lessons from the P1 vista-store build (2026-07-05):
   script outside the repo needs an `.mts` extension for tsx to treat it
   as ESM.
 
-**Why:** both bit during P1 (red gates / failed acceptance run).
+- **CJS bundle vs `import.meta.url`:** the extension bundles to
+  CommonJS (`dist/extension.cjs` — the extension host requires CJS,
+  and `"type": "module"` makes plain `.js` ESM). Any module-top-level
+  `import.meta.url` becomes `undefined` in that bundle and crashes at
+  LOAD time ("Invalid URL") — keep such code lazy and path-injectable,
+  and have ext code import specific modules, never the package root.
+- **The in-VSCode smoke is the real gate for ext code:**
+  `npm run test:vscode` (installed-binary @vscode/test-electron, no
+  download) caught both the bundle crash and the numeric-tag grammar
+  gap that 148 unit tests could not.
+
+**Why:** all of these bit during P1/P3 (red gates / failed runs).
 **How to apply:** don't "fix" the row-copy in engine.ts as an
 optimization without re-running the deepEqual tests; when adding a new
 src module, write `.js` specifiers even though sibling test files say

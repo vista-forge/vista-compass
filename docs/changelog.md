@@ -77,3 +77,36 @@ six months. Don't summarise diffs — the diff is the diff. Focus on
   vista-atlas starts; that also triggers extracting vista-store to a
   sibling repo.
 - The VSCode extension harness itself — that is P3, next.
+
+## 2026-07-05 — P3: Compass v2 MVP (0.2.0 parity on meta.db)
+
+**Done:**
+
+- Pure model layer, all TDD'd with the predecessor's bug classes as
+  tests first: token grammar + §7.1 classification (incl. numeric
+  tags and the `(`-forces-global rule), `analyze()` cross-join,
+  `globalCard()` with the globalBase files→PIKS join, lookups, and
+  markdown card renderers (vscode layer only wraps strings).
+- Extension harness: mumps language id, Explorer sidebar
+  (Header/Tags/Callers/Callees/Globals/XINDEX, zero-count hidden,
+  XINDEX auto-expanded), Tier A hover set, activation that
+  fetch-verifies the pinned release into globalStorage via vista-store
+  (dataPath override for dev), vintage badge, esbuild CJS bundle,
+  `npm run vsix` packaging.
+- **Automated acceptance PASS**: `npm run test:vscode` drives the real
+  installed VSCode 1.125.1 (P0 spike pattern) against the real db —
+  activation + routine/global/tag hovers on the guide's PRCA45PT.
+
+**Tried and fixed via the smoke run (worth the harness):**
+
+- Importing the package root pulled twinlink's top-level
+  `import.meta.url` into the CJS bundle → "Invalid URL" at extension
+  load. Ext code now imports specific modules; the contract loader
+  takes an explicit path.
+- Numeric tags (`430`) weren't tokens, so the wireframe's tag hover
+  was empty. Labels now allow digits; bare numeric literals stay quiet.
+
+**Deferred:**
+
+- Owner visual walkthrough against the §2.1 wireframe (formal P3 close).
+- P4 surfaces (RPCs/options/protocols, dashboard, symbols, diagnostics).

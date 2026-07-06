@@ -16,7 +16,7 @@ org Tier-D rule when the effort lands.
 | P0 | Engine spike → `node:sqlite` decision | ✅ done 2026-07-05 (recorded in proposal §11) |
 | P1 | `vista-store` shared lib + twin-link contract v1 | ✅ **Compass side done 2026-07-05** — see below |
 | P2 | Atlas MVP (vdocs-web parity) | not started (vista-atlas repo) |
-| P3 | Compass v2 MVP (0.2.0 parity on meta.db) | next up in this repo |
+| P3 | Compass v2 MVP (0.2.0 parity on meta.db) | ✅ **MVP landed 2026-07-05** — automated acceptance PASS; visual walkthrough = owner check (see below) |
 | P4 | Full-scope surfaces | blocked on P3 (+ P-vdocs 1 for Atlas) |
 | P5 | Twin-link features | blocked on P2+P3 |
 
@@ -57,16 +57,39 @@ Remaining P1 (not this repo / producer side):
       `data-v1-derived.json` sidecar, then pin it in
       `contracts/releases/vista-meta-data-v1.json` here.
 
-## P3 — next steps in this repo
+## P3 — Compass v2 MVP (landed 2026-07-05)
 
-1. VSCode extension harness (esbuild bundle, `@vscode/test-electron`,
-   `engines.vscode ^1.125.0`) on top of the house node template.
-2. Re-encode the predecessor's bug classes as failing tests FIRST
-   (clean-room rule): bare-vs-caret global names, `global_root`
-   normalization (`^DD("IX",` → `DD`), XINDEX `line_text` holding line
-   numbers as text.
-3. Activation: fetch-verify data via vista-store into `globalStorage`;
-   routine sidebar (tags/callers/callees/globals/XINDEX) + hover set
-   incl. `^GLOBAL` → file → PIKS card.
-4. Acceptance: the 0.2.0 guide walkthrough
-   (`vista-meta/docs/guides/vista-vscode-guide.md`) passes on v2.
+All TDD'd; the three predecessor bug classes were encoded as tests
+FIRST (bare-vs-caret, `global_root` normalization, XINDEX
+line-number-as-text), and the smoke run caught + fixed two more
+(numeric tags `430`/`433` missing from the token grammar; the CJS
+bundle breaking on a top-level `import.meta.url`).
+
+- [x] Pure model layer (`src/model/`): globalBase / parseTags /
+      token classification (§7.1 rules incl. the `(`-forces-global
+      refinement and numeric labels); `analyze()` cross-join;
+      `globalCard()` files→PIKS join; lookups; markdown card renderers.
+- [x] Extension harness: engines.vscode ^1.125.0, mumps language id,
+      `vistaCompassRoutine` Explorer view, refresh/reloadData commands,
+      dataPath/vistaMHostPath/topN settings, esbuild → dist/extension.cjs.
+      Activation fetch-verifies the pinned release into globalStorage
+      (or dataPath override), contract-checks, shows the vintage badge.
+- [x] Sidebar (Header/Tags/Callers/Callees/Globals/XINDEX; zero-count
+      sections hidden; XINDEX auto-expanded; click-to-open incl.
+      caller/callee navigation via vistaMHostPath) + the Tier A hover
+      set (routine card + tag badge, tag entry-point card, `^GLOBAL` →
+      FileMan → PIKS card).
+- [x] **Automated acceptance PASS** (`npm run test:vscode`): smoke suite
+      inside the installed VSCode 1.125.1 against the real data-v1 db —
+      activation + all three hover cards on the guide's PRCA45PT.
+- [x] `npm run vsix` → installable `vista-compass-0.1.0.vsix`.
+- [ ] **Owner visual walkthrough** (closes P3 formally): install the
+      vsix (`code --install-extension vista-compass-0.1.0.vsix`), open
+      the guide's PRCA45PT.m, compare against the §2.1 wireframe.
+
+## P4 — next in this repo
+
+RPC/option/protocol first-class surfaces, package dashboard, workspace
+symbols (indexed `xindex_tags` prefix query), go-to-definition /
+references from `routine_calls`, XINDEX diagnostics (default off),
+"documented in N docs" bridge affordances (soft twin-link).
