@@ -91,6 +91,18 @@
       {
         "command": "vistaCompass.reloadData",
         "title": "VistA Compass: Reload Data (re-verify release)"
+      },
+      {
+        "command": "vistaCompass.findRpc",
+        "title": "VistA Compass: Find RPC"
+      },
+      {
+        "command": "vistaCompass.findOption",
+        "title": "VistA Compass: Find Option"
+      },
+      {
+        "command": "vistaCompass.packageDashboard",
+        "title": "VistA Compass: Package Dashboard"
       }
     ],
     "menus": {
@@ -132,6 +144,11 @@
           "type": "number",
           "default": 15,
           "description": "Maximum entries per sidebar section."
+        },
+        "vistaCompass.xindexAsDiagnostics": {
+          "type": "boolean",
+          "default": false,
+          "description": "Surface XINDEX findings in the Problems panel and editor gutter."
         }
       }
     }

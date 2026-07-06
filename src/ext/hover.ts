@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { isRoutine, routineNameFromPath, tagCallers, tagExists } from '../model/lookup.js';
 import { classifyToken } from '../model/mumps.js';
+import { fieldPiksForFile, mentionCount } from '../model/package.js';
 import { renderGlobalCard, renderRoutineCard, renderTagCard } from '../model/render.js';
 import { analyze, globalCard } from '../model/routine.js';
 import type { Store } from '../store/engine.js';
@@ -35,6 +36,7 @@ export class CompassHoverProvider implements vscode.HoverProvider {
         const tag = classified.token.tag;
         markdown = renderRoutineCard(info, {
           topN: this.getTopN(),
+          mentions: mentionCount(store, 'routine', classified.name),
           ...(tag === undefined
             ? {}
             : { tagBadge: { tag, exists: tagExists(store, classified.name, tag) } }),
@@ -43,7 +45,15 @@ export class CompassHoverProvider implements vscode.HoverProvider {
       }
       case 'global': {
         const card = globalCard(store, classified.name);
-        markdown = card === undefined ? undefined : renderGlobalCard(card);
+        if (card !== undefined) {
+          const fieldPiks = Object.fromEntries(
+            card.files.map((file) => [file.fileNumber, fieldPiksForFile(store, file.fileNumber)]),
+          );
+          markdown = renderGlobalCard(card, {
+            mentions: mentionCount(store, 'global', classified.name),
+            fieldPiks,
+          });
+        }
         break;
       }
       case 'tag-def': {

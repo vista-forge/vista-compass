@@ -12,7 +12,15 @@ import { checkMetaDb } from '../store/contract.js';
 import { type Store, openStore } from '../store/engine.js';
 import { ensureAsset } from '../store/fetch.js';
 import { loadReleaseRecord } from '../store/release.js';
+import { registerCommands } from './commands.js';
+import { registerDiagnostics } from './diagnostics.js';
 import { CompassHoverProvider } from './hover.js';
+import {
+  CompassDefinitionProvider,
+  CompassReferenceProvider,
+  CompassWorkspaceSymbolProvider,
+  TagDocumentSymbolProvider,
+} from './providers.js';
 import { RoutineTreeProvider, type TreeConfig } from './treeProvider.js';
 
 const DB_ASSET = 'vista-meta-data-v1.db';
@@ -115,6 +123,27 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       provider.refresh();
     }),
   );
+
+  // P4: language features, pickers, dashboard, gated diagnostics.
+  const selector = [{ language: 'mumps' }, { pattern: '**/*.m' }];
+  const getStore = (): Store | undefined => store;
+  const getHostRoot = (): string => treeConfig().vistaMHostPath;
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(selector, new TagDocumentSymbolProvider()),
+    vscode.languages.registerWorkspaceSymbolProvider(
+      new CompassWorkspaceSymbolProvider(getStore, getHostRoot),
+    ),
+    vscode.languages.registerDefinitionProvider(
+      selector,
+      new CompassDefinitionProvider(getStore, getHostRoot),
+    ),
+    vscode.languages.registerReferenceProvider(
+      selector,
+      new CompassReferenceProvider(getStore, getHostRoot),
+    ),
+  );
+  registerCommands(context, getStore, getHostRoot);
+  registerDiagnostics(context, getStore, () => config().get<boolean>('xindexAsDiagnostics', false));
 
   await openData(context, view);
   setFromEditor(vscode.window.activeTextEditor);

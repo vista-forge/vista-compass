@@ -9,6 +9,7 @@ import * as vscode from 'vscode';
 import { resolveSourcePath, routineNameFromPath, routineSourcePath } from '../model/lookup.js';
 import { type TagLocation, parseTags } from '../model/mumps.js';
 import { type RoutineInfo, type XindexSeverity, analyze } from '../model/routine.js';
+import { optionsForRoutine, protocolsInvoking, rpcsForRoutine } from '../model/surfaces.js';
 import type { Store } from '../store/engine.js';
 
 export interface TreeConfig {
@@ -194,6 +195,40 @@ export class RoutineTreeProvider implements vscode.TreeDataProvider<Node> {
         return leaf(item);
       });
       nodes.push(this.section('Globals', info.globals.length, children));
+    }
+
+    const routineName = info.name;
+    const rpcs = rpcsForRoutine(store, routineName);
+    if (rpcs.length > 0) {
+      const children = rpcs.slice(0, topN).map((rpc) => {
+        const item = new vscode.TreeItem(rpc.name, vscode.TreeItemCollapsibleState.None);
+        item.iconPath = new vscode.ThemeIcon('remote');
+        item.description = `${rpc.tag ?? ''}  ${rpc.returnType}`;
+        return leaf(item);
+      });
+      nodes.push(this.section('RPCs', rpcs.length, children));
+    }
+
+    const options = optionsForRoutine(store, routineName);
+    if (options.length > 0) {
+      const children = options.slice(0, topN).map((option) => {
+        const item = new vscode.TreeItem(option.name, vscode.TreeItemCollapsibleState.None);
+        item.iconPath = new vscode.ThemeIcon('menu');
+        item.description = `${option.menuText}  ${option.type}`;
+        return leaf(item);
+      });
+      nodes.push(this.section('Options', options.length, children));
+    }
+
+    const protocols = protocolsInvoking(store, routineName);
+    if (protocols.length > 0) {
+      const children = protocols.slice(0, topN).map((protocol) => {
+        const item = new vscode.TreeItem(protocol.name, vscode.TreeItemCollapsibleState.None);
+        item.iconPath = new vscode.ThemeIcon('zap');
+        item.description = `${protocol.actionKind} → ${protocol.label}  ×${protocol.refCount}`;
+        return leaf(item);
+      });
+      nodes.push(this.section('Protocols', protocols.length, children));
     }
 
     if (info.xindex.length > 0) {
