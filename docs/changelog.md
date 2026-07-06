@@ -144,3 +144,18 @@ on the Biome 2 config schema). Migration: `biome migrate --write`
 (new schema, assist/organizeImports — one-time import-order sweep over
 12 files) and an explicit tsconfig `types: [node, vscode]` (TS 6
 stopped auto-including @types). Full gate + in-VSCode smoke green.
+
+## 2026-07-06 — P5: twin-link features, Compass side (v0.4.0)
+
+The seam is live against the real Atlas twin: Compass's contract-v1
+command surface + URI handler; hover cross-jumps ("documented in N
+docs → Atlas", degrading to Atlas search until its entity tier lands);
+seeded search handoff (combined measured-model picker with the one
+footer row into docs search + right-click "Find in Docs");
+vista.openCitation routing both citation formats; the Gate-R pin
+handshake against entity-bridge.meta.json; copy-citation everywhere
+(bridge-row-preferred contract lines). Smoke now symlinks ONLY the
+installed twin into a scratch extensions dir — full-real-extensions-dir
+runs picked up foreign MUMPS extensions and broke assertions.
+vista.openCitation is registered defensively (implementedBy both twins;
+duplicate registration would crash whichever activates second).

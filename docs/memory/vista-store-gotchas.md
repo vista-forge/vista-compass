@@ -47,6 +47,14 @@ Durable lessons from the P1 vista-store build (2026-07-05):
   tsconfig `compilerOptions`. Same medicine applies to vista-atlas
   (same template).
 
+- **Twin-seam runtime rules:** a command `implementedBy: both` in the
+  contract (vista.openCitation) must be registered defensively
+  (getCommands check + try/catch) — VSCode crashes the second
+  registrant. Smoke with the twin: symlink ONLY the twin into a
+  scratch `--extensions-dir`; pointing at the real extensions dir
+  loads foreign MUMPS extensions that clash (duplicate commands,
+  competing definition providers).
+
 **Why:** all of these bit during P1/P3 (red gates / failed runs).
 **How to apply:** don't "fix" the row-copy in engine.ts as an
 optimization without re-running the deepEqual tests; when adding a new

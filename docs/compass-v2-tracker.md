@@ -15,10 +15,10 @@ org Tier-D rule when the effort lands.
 |---|---|---|
 | P0 | Engine spike → `node:sqlite` decision | ✅ done 2026-07-05 (recorded in proposal §11) |
 | P1 | `vista-store` shared lib + twin-link contract v1 | ✅ **Compass side done 2026-07-05** — see below |
-| P2 | Atlas MVP (vdocs-web parity) | not started (vista-atlas repo) |
+| P2 | Atlas MVP (vdocs-web parity) | ✅ landed in vista-atlas (installed + working, 2026-07-06) |
 | P3 | Compass v2 MVP (0.2.0 parity on meta.db) | ✅ **CLOSED 2026-07-05** — automated acceptance PASS + owner walkthrough PASS |
 | P4 | Full-scope surfaces (Compass side) | ✅ **landed 2026-07-05** — smoke spot-check PASS; owner visual check pending (Atlas P4 blocked on P-vdocs 1) |
-| P5 | Twin-link features | blocked on P2+P3 |
+| P5 | Twin-link features (Compass side) | ✅ **landed 2026-07-06, v0.4.0** — smoke PASS against the real twin; owner click-through pending |
 
 ## P1 — vista-store (started inside this repo per proposal §6)
 
@@ -126,8 +126,41 @@ Deferred (not in this phase): signature help (gated on the bake
 extracting formals — Track P-vista-meta 2); hard twin-link features
 (P5, needs vista-atlas); CodeLens/completion/status bar (Tier D).
 
-## P5 — next (needs vista-atlas P2)
+## P5 — twin-link features (Compass side, landed 2026-07-06, v0.4.0)
 
-Twin-link features per contract v1: cross-jumps ("documented → Atlas"
-click-through), seeded search handoff, `vista.openCitation` routing,
-mutual-pin handshake, copy-citation everywhere.
+Atlas's live seam (verified read-only in its repo): `vistaAtlas.search
+/ openDoc / openSection / pins` + URI handler, vendoring our
+contract artifact. `vistaAtlas.openEntity` / `vista.openCitation` not
+yet (its entity tier is P4-gated) — Compass degrades per §6.1.
+
+- [x] Compass contract-v1 surface: `vistaCompass.lookup / openEntity /
+      search / pins`, `vista.openCitation` (registered defensively —
+      implementedBy both; first registration wins), vscode:// URI
+      handler.
+- [x] Cross-jumps: hover "documented in N docs → Atlas" command link —
+      `vistaAtlas.openEntity` when the twin ships it, degrading to
+      `vistaAtlas.search`; affordance hidden when the twin is absent.
+      Hover markdown trust scoped to our two commands.
+- [x] Seeded search handoff: `vistaCompass.search` combined picker
+      (routines/tags/RPCs/options) with the one footer row into Atlas
+      docs search; editor right-click "Find in Docs".
+- [x] Citation routing: `vista.openCitation` parses both formats —
+      vista-meta citations open the measured source (tsv→kind map),
+      vdocs citations forward to `vistaAtlas.openSection`.
+- [x] Gate-R mutual-pin handshake on activation: own meta pins and the
+      twin's `vistaAtlas.pins` compared against the
+      `entity-bridge.meta.json` pin pair (fetch-verified as a pinned
+      release asset); warns on release-pair drift.
+- [x] Copy-citation on routine/global hover cards — the exact contract
+      line, bridge row preferred (`citationFor`, TDD'd).
+- [x] **Smoke PASS with the REAL Atlas twin** (scratch extensions dir
+      symlinking only the twin): pins shape, cross-jump links,
+      citation routing into XPDUTL.m. 186 unit tests, coverage ~99%.
+- [ ] Owner click-through: hover a routine → "documented in N docs →
+      Atlas" lands in Atlas doc search; "copy citation"; palette
+      "Search Measured Model" footer row; right-click "Find in Docs".
+
+Remaining for FULL §6.1 (Atlas-side work, their repo): Atlas registers
+`vistaAtlas.openEntity` + `vista.openCitation` fallback + its own
+seeded footer row into `vistaCompass.search`; then the Compass
+cross-jump automatically upgrades from search to entity pages.
