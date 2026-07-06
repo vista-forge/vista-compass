@@ -67,6 +67,11 @@ describe('renderRoutineCard', () => {
     );
   });
 
+  it('adds the documented-in-N-docs line when mentions are given', () => {
+    assert.match(renderRoutineCard(INFO, { mentions: 42 }), /documented in 42 docs/);
+    assert.doesNotMatch(renderRoutineCard(INFO, { mentions: 0 }), /documented in/);
+  });
+
   it('renders a not-measured card when there is no header', () => {
     const md = renderRoutineCard({ ...INFO, header: undefined }, {});
     assert.match(md, /PRCA45PT/);
@@ -114,6 +119,39 @@ describe('renderGlobalCard', () => {
     const md = renderGlobalCard({ ...card, files: [], moreFiles: 0 });
     assert.doesNotMatch(md, /File \*\*/);
     assert.doesNotMatch(md, /… \d+ more/);
+  });
+
+  it('adds the documented-in-N-docs line when mentions are given', () => {
+    assert.match(renderGlobalCard(card, { mentions: 120 }), /documented in 120 docs/);
+  });
+
+  it('renders the field-PIKS drill-down per file when provided', () => {
+    const md = renderGlobalCard(card, {
+      fieldPiks: {
+        '2': [
+          {
+            fieldNumber: '.104',
+            fieldName: 'PROVIDER',
+            dataType: 'POINTER',
+            pointerTarget: '200',
+            refPiks: 'S',
+            crossPiks: 'P->S',
+            sensitive: false,
+          },
+          {
+            fieldNumber: '.01',
+            fieldName: 'NAME',
+            dataType: 'FREE TEXT',
+            pointerTarget: undefined,
+            refPiks: undefined,
+            crossPiks: undefined,
+            sensitive: true,
+          },
+        ],
+      },
+    });
+    assert.match(md, /cross-PIKS fields: \.104 PROVIDER → #200 \(P->S\)/);
+    assert.match(md, /sensitive fields: 1/);
   });
 });
 

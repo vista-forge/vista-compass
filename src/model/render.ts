@@ -4,12 +4,15 @@
  * result in a MarkdownString.
  */
 
+import type { FieldPiks } from './package.js';
 import type { CallerEdge, GlobalCard, RoutineInfo } from './routine.js';
 
 export interface RoutineCardOptions {
   readonly topN?: number;
   /** Present when hovering TAG^RTN: the measured-tag badge. */
   readonly tagBadge?: { readonly tag: string; readonly exists: boolean };
+  /** entity_bridge mention_count; > 0 adds "documented in N docs". */
+  readonly mentions?: number;
 }
 
 const fmt = new Intl.NumberFormat('en-US');
@@ -67,11 +70,26 @@ export function renderRoutineCard(info: RoutineInfo, options: RoutineCardOptions
         .join(', ')}`,
     );
   }
+  appendMentions(lines, options.mentions);
   return lines.join('\n');
 }
 
+function appendMentions(lines: string[], mentions: number | undefined): void {
+  if (mentions !== undefined && mentions > 0) {
+    lines.push('');
+    lines.push(`documented in ${mentions} docs`);
+  }
+}
+
+export interface GlobalCardOptionsRender {
+  /** entity_bridge mention_count for the global. */
+  readonly mentions?: number;
+  /** Field-level PIKS rows per file_number — the drill-down. */
+  readonly fieldPiks?: Readonly<Record<string, readonly FieldPiks[]>>;
+}
+
 /** The `^GLOBAL` hover card: who-references + FileMan → PIKS join. */
-export function renderGlobalCard(card: GlobalCard): string {
+export function renderGlobalCard(card: GlobalCard, options: GlobalCardOptionsRender = {}): string {
   const lines: string[] = [
     `**^${card.name}** — referenced by ${card.routineCount} routines · ${card.totalRefs} refs`,
   ];
@@ -90,11 +108,26 @@ export function renderGlobalCard(card: GlobalCard): string {
       file.recordCount === undefined ? '' : ` · ${fmt.format(file.recordCount)} records`;
     lines.push('');
     lines.push(`File **${file.fileNumber}** ${file.fileName}${piks}${records}`);
+    const fields = options.fieldPiks?.[file.fileNumber] ?? [];
+    const cross = fields.filter((f) => f.crossPiks !== undefined);
+    if (cross.length > 0) {
+      lines.push(
+        `  cross-PIKS fields: ${cross
+          .slice(0, 5)
+          .map((f) => `${f.fieldNumber} ${f.fieldName} → #${f.pointerTarget} (${f.crossPiks})`)
+          .join(', ')}`,
+      );
+    }
+    const sensitive = fields.filter((f) => f.sensitive).length;
+    if (sensitive > 0) {
+      lines.push(`  sensitive fields: ${sensitive}`);
+    }
   }
   if (card.moreFiles > 0) {
     lines.push('');
     lines.push(`… ${card.moreFiles} more`);
   }
+  appendMentions(lines, options.mentions);
   return lines.join('\n');
 }
 
