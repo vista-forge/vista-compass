@@ -10,8 +10,8 @@ import { isRoutine, resolveSourcePath, tagCallers, tagExists } from './lookup.ts
 function buildFixture(path: string): void {
   const db = new DatabaseSync(path);
   db.exec(`
-    CREATE TABLE routines_comprehensive (routine_name TEXT PRIMARY KEY, package TEXT);
-    INSERT INTO routines_comprehensive VALUES ('XPDUTL', 'Kernel'), ('DGRP', 'Registration');
+    CREATE TABLE routines_comprehensive (routine_name TEXT PRIMARY KEY, package TEXT, source_path TEXT);
+    INSERT INTO routines_comprehensive VALUES ('XPDUTL', 'Kernel', '/opt/VistA-M/Packages/Kernel/Routines/XPDUTL.m'), ('DGRP', 'Registration', '/opt/VistA-M/Packages/Registration/Routines/DGRP.m');
     CREATE TABLE xindex_tags (routine_name TEXT, tag TEXT, data TEXT);
     INSERT INTO xindex_tags VALUES ('XPDUTL', 'BMES', ''), ('XPDUTL', 'MES', '');
     CREATE TABLE routine_calls (
@@ -111,4 +111,24 @@ describe('resolveSourcePath', () => {
       assert.equal(resolveSourcePath(tc.sourcePath, tc.hostRoot), tc.expected);
     });
   }
+});
+
+describe('routineNameFromPath', () => {
+  it('takes the basename minus .m', async () => {
+    const { routineNameFromPath } = await import('./lookup.ts');
+    assert.equal(routineNameFromPath('/x/Packages/AR/Routines/PRCA45PT.m'), 'PRCA45PT');
+    assert.equal(routineNameFromPath('XPDUTL.m'), 'XPDUTL');
+    assert.equal(routineNameFromPath('/x/notes.txt'), undefined);
+  });
+});
+
+describe('routineSourcePath', () => {
+  it('returns the container-side source_path for a measured routine', async () => {
+    const { routineSourcePath } = await import('./lookup.ts');
+    assert.equal(
+      routineSourcePath(store, 'DGRP'),
+      '/opt/VistA-M/Packages/Registration/Routines/DGRP.m',
+    );
+    assert.equal(routineSourcePath(store, 'NOPE'), undefined);
+  });
 });

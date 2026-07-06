@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Vista Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/extension.cjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -18,7 +18,8 @@
     "LICENSE"
   ],
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "vscode": "^1.125.0"
   },
   "scripts": {
     "test": "node --import tsx --test 'src/**/*.test.ts'",
@@ -30,15 +31,19 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "audit": "npm audit --audit-level=high",
-    "check": "npm run lint && npm run typecheck && npm run test:cov && npm run audit",
-    "prepublishOnly": "npm run build"
+    "check": "npm run lint && npm run typecheck && npm run test:cov && npm run audit && npm run bundle",
+    "prepublishOnly": "npm run build",
+    "bundle": "esbuild src/ext/extension.ts --bundle --outfile=dist/extension.cjs --external:vscode --platform=node --format=cjs --sourcemap"
   },
   "license": "MIT",
   "author": "Rafael Richards",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@types/node": "^24.0.0",
+    "@types/vscode": "^1.125.0",
+    "@vscode/test-electron": "^3.0.0",
     "c8": "^10.1.3",
+    "esbuild": "^0.28.1",
     "simple-git-hooks": "^2.11.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
@@ -50,5 +55,78 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/vista-forge/vista-compass"
+  },
+  "displayName": "Vista Compass",
+  "publisher": "vista-forge",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/*.m",
+    "onLanguage:mumps"
+  ],
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "vistaCompassRoutine",
+          "name": "VistA Routine",
+          "icon": "$(compass)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "vistaCompass.refresh",
+        "title": "VistA Compass: Refresh Routine Sidebar",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "vistaCompass.reloadData",
+        "title": "VistA Compass: Reload Data (re-verify release)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "vistaCompass.refresh",
+          "when": "view == 'vistaCompassRoutine'",
+          "group": "navigation"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "mumps",
+        "aliases": [
+          "MUMPS",
+          "M"
+        ],
+        "extensions": [
+          ".m"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "Vista Compass",
+      "properties": {
+        "vistaCompass.dataPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a local meta.db (vista-meta-data-v1.db). Empty: fetch-verify the published release into global storage."
+        },
+        "vistaCompass.vistaMHostPath": {
+          "type": "string",
+          "default": "",
+          "description": "Host directory mirroring the container /opt/VistA-M tree (e.g. ~/projects/vista-meta/vista/vista-m-host) \u2014 enables click-to-open on callers/callees."
+        },
+        "vistaCompass.topN": {
+          "type": "number",
+          "default": 15,
+          "description": "Maximum entries per sidebar section."
+        }
+      }
+    }
   }
 }

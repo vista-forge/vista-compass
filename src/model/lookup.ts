@@ -59,3 +59,18 @@ export function resolveSourcePath(sourcePath: string, hostRoot: string): string 
   const root = hostRoot.endsWith('/') ? hostRoot.slice(0, -1) : hostRoot;
   return `${root}/${relative}`;
 }
+
+/** Routine name from an editor path: basename minus `.m`, or undefined. */
+export function routineNameFromPath(path: string): string | undefined {
+  const base = path.split('/').at(-1) ?? path;
+  return base.endsWith('.m') ? base.slice(0, -2) : undefined;
+}
+
+/** Container-side source_path of a measured routine, for navigation. */
+export function routineSourcePath(store: Store, name: string): string | undefined {
+  const row = store.get(
+    'SELECT source_path FROM routines_comprehensive WHERE routine_name = ?',
+    name,
+  );
+  return row === undefined ? undefined : String(row.source_path ?? '');
+}
