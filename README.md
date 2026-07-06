@@ -1,25 +1,25 @@
 # Vista Compass
 
-**X-ray vision for VistA code, inside VSCode.** Open any `.m` routine and
-instantly see what the VistA system *measurably is* around it: who calls it,
-what it calls, which globals it touches and which FileMan files those are,
-whether patient data is involved, which RPCs and menu options enter through
-it, and what the static analyzer thinks of it — all from a verified,
-versioned measurement of a real VistA system, fully offline, with no VistA
-instance required.
+**X-ray vision for VistA code, inside VSCode — the code half of a
+two-extension pair.** Vista Compass shows what the VistA system *measurably
+is*: open any `.m` routine and instantly see who calls it, what it calls,
+which globals it touches and which FileMan files those are, whether patient
+data is involved, which RPCs and menu options enter through it, and what the
+static analyzer thinks of it. Its sibling extension,
+[**Vista Atlas**](https://github.com/vista-forge/vista-atlas), puts the VA
+documentation library in the editor beside it — what the documentation
+*says* — and the two cross-link: hover a routine or global in Compass and
+jump straight to the manuals that document it; cite a measured fact from a
+doc and land back in the source. Everything comes from a verified, versioned
+measurement of a real VistA system — fully offline, no VistA instance
+required.
 
 Compass answers in one hover what normally takes a FileMan data dictionary
 session, an XINDEX run, and a lot of grepping:
 
 > Hover `^DPT` → **File 2 PATIENT — PIKS P (Patient)** · 1,811 records ·
 > referenced by 3,000+ routines · documented in 120 docs → *click through to
-> the manuals*.
-
-It is one half of a pair: Compass shows what the system **is** (the measured
-code + data model); its twin [Vista Atlas](https://github.com/vista-forge/vista-atlas)
-shows what the documentation **says** (the full VA manual corpus). The two
-cross-link, so "show me the docs for this RPC" and "show me the code behind
-this doc" are each one click.
+> the manuals in Vista Atlas*.
 
 ## Why a VistA developer needs this
 
@@ -105,17 +105,17 @@ Routine and global cards also carry **"documented in N docs → Atlas"**
   the tag line in the target routine's source.
 - **Find references** — on a tag at column 0, lists every call site across
   the measured call graph.
-- **`VistA Compass: Search Measured Model`** — one picker across routines,
-  tags, RPCs, and options, with a footer row that forwards your query into
-  Vista Atlas doc search.
-- **`VistA Compass: Find RPC` / `Find Option`** — name-prefix pickers over
-  the full RPC/option registries; Enter opens the implementing routine.
-- **Right-click → `Find in Docs`** — send the token under the cursor to the
+- **Search Measured Model** — one picker across routines, tags, RPCs, and
+  options, with a footer row that forwards your query into Vista Atlas doc
+  search.
+- **Find RPC / Find Option** — name-prefix pickers over the full RPC/option
+  registries; Enter opens the implementing routine.
+- **Right-click → Find in Docs** — send the token under the cursor to the
   documentation twin.
 
 ### Package dashboard
 
-`VistA Compass: Package Dashboard` (defaults to the active routine's
+**Vista Compass: Package Dashboard** (defaults to the active routine's
 package): namespace, prefixes, `app_code`, VDL id, measured size, PIKS
 distribution of its shipped files, top inbound/outbound package couplings,
 and the routine leaderboard.
@@ -126,45 +126,59 @@ Set `vistaCompass.xindexAsDiagnostics: true` and XINDEX findings light up in
 the Problems panel and the editor gutter (F → error, W → warning, rest →
 info).
 
-### Twin integration (Vista Atlas)
+### Deep links and cross-extension integration
 
-Fully optional — every feature degrades gracefully when Atlas is absent:
+Fully optional — every twin feature degrades gracefully when Vista Atlas is
+absent:
 
 - **Cross-jumps** from hover cards into the documentation.
 - **Citation routing** — `vista.openCitation` opens either citation format:
   `vista-meta data-v1 · code-model/rpcs.tsv · name=…` lands in the measured
   source; `vdocs://section/…` opens in Atlas.
-- **Deep links** — `vscode://vista-forge.vista-compass/lookup?kind=rpc&key=…`
-  works from terminals, markdown, and AI answers.
+- **Deep links** — other tools (including Vista Atlas) can land Compass on
+  an exact target:
+  - `vscode://vista-forge.vista-compass/lookup?kind=rpc&key=…`
+  - `vscode://vista-forge.vista-compass/openEntity?entity_id=…`
+  - `vscode://vista-forge.vista-compass/search?query=…`
+
+  The same operations are available as VSCode commands for programmatic use:
+  `vistaCompass.lookup`, `vistaCompass.openEntity`, `vistaCompass.search`,
+  and `vistaCompass.pins` (reports the installed release tag and content
+  hash).
 - **Release-pair handshake** — on startup Compass verifies its data release
   and the Atlas corpus release still form the published, cross-validated
   pair, and warns if they've drifted apart.
 
-### Commands (palette)
+## Commands
 
-| Command | Does |
+| Command | What it does |
 |---|---|
-| `VistA Compass: Search Measured Model` | Combined routine/tag/RPC/option search + docs handoff |
-| `VistA Compass: Find RPC` | RPC picker → implementing routine |
-| `VistA Compass: Find Option` | Option picker → implementing routine |
-| `VistA Compass: Package Dashboard` | The per-package overview webview |
-| `VistA Compass: Find in Docs (Vista Atlas)` | Current token → docs search |
-| `VistA Compass: Refresh Routine Sidebar` | Re-read the active routine |
-| `VistA Compass: Reload Data` | Re-verify and reopen the data release |
+| **VistA Compass: Search Measured Model** | Combined routine/tag/RPC/option search + docs handoff |
+| **VistA Compass: Find RPC** | RPC picker → implementing routine |
+| **VistA Compass: Find Option** | Option picker → implementing routine |
+| **VistA Compass: Package Dashboard** | The per-package overview webview |
+| **VistA Compass: Find in Docs (Vista Atlas)** | Current token → docs search |
+| **VistA Compass: Refresh Routine Sidebar** | Re-read the active routine |
+| **VistA Compass: Reload Data** | Re-verify and reopen the data release |
 
 ## Getting started
 
-1. Install the extension (`code --install-extension vista-compass-<version>.vsix`).
-2. Open any `.m` file. On first activation Compass downloads the published
+1. Install the extension (VSCode 1.125 or later).
+2. Open any `.m` file. First activation downloads the published
    **vista-meta data release** (~90 MB SQLite database) into extension
    storage and **verifies it against pinned sha256 checksums** — after that
    it is fully offline.
-3. Optional settings:
+3. Point `vistaCompass.vistaMHostPath` at a VistA-M source checkout to
+   enable all click-to-open navigation.
+4. Install [Vista Atlas](https://github.com/vista-forge/vista-atlas) to
+   light up the documentation cross-links.
+
+## Settings
 
 | Setting | Purpose |
 |---|---|
 | `vistaCompass.dataPath` | Use a local copy of `vista-meta-data-v1.db` instead of downloading |
-| `vistaCompass.vistaMHostPath` | Directory holding the VistA-M source tree (e.g. a `Packages/…/Routines` checkout) — enables all click-to-open navigation, go-to-definition, references, and workspace symbols |
+| `vistaCompass.vistaMHostPath` | Directory holding the VistA-M source tree (e.g. a `Packages/…/Routines` checkout) — enables click-to-open navigation, go-to-definition, references, and workspace symbols |
 | `vistaCompass.topN` | Max entries per sidebar section (default 15) |
 | `vistaCompass.xindexAsDiagnostics` | XINDEX findings in the Problems panel (default off) |
 
@@ -174,14 +188,24 @@ Everything Compass shows is a query over **meta.db**, the SQLite projection
 of the [vista-meta](https://github.com/rafael5/vista-meta) data release: 24
 typed tables measured from a running VistA (routines, call graph, globals,
 RPCs, options, protocols, FileMan files, PIKS classifications, XINDEX
-results) plus the vdocs↔vista-meta entity bridge. The release is pinned by
-checksum in this repo and verified on every load — Compass never invents,
-re-derives, or edits data, and it never touches a live VistA system.
+results) plus the vdocs↔vista-meta entity bridge that powers the
+documentation cross-links. The release is pinned by checksum in this repo
+and verified on every load — Compass never invents, re-derives, or edits
+data, and it never touches a live VistA system.
 
 ## Development
 
-House node template: `make install` · `make check` (lint + typecheck +
-coverage + audit) · `npm run test:vscode` (end-to-end smoke inside the
-installed VSCode) · `npm run vsix` (build the installable package). See
-[`node-dev-guide.md`](node-dev-guide.md) and
-[`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md).
+```bash
+make install         # dependencies + git hooks
+make check           # lint + typecheck + tests with coverage + audit
+npm run test:vscode  # end-to-end smoke inside the installed VSCode
+npm run vsix         # package the extension
+```
+
+See [`node-dev-guide.md`](node-dev-guide.md) for the full development
+practices, and [`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md)
+for the build tracker.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
