@@ -21,25 +21,47 @@ shows what the documentation **says** (the full VA manual corpus). The two
 cross-link, so "show me the docs for this RPC" and "show me the code behind
 this doc" are each one click.
 
-## Why a VistA developer wants this
+## Why a VistA developer needs this
 
-- **Cold-opening an unfamiliar routine** — the sidebar gives you its package,
-  size, fan-in/fan-out, entry points, callers, callees, globals, and lint
-  findings before you've read a line.
-- **Impact analysis** — find every caller of `TAG^ROUTINE` across all of
-  VistA from the measured call graph, not from grep.
-- **Data awareness** — every global reference resolves to its FileMan file
-  and **PIKS class** (Patient / Institution / Knowledge / System), down to
-  field-level cross-PIKS pointer flags and sensitive-field counts. You know
-  when you're near patient data.
-- **API surface at a glance** — which RPCs and menu options land in this
-  routine; find any RPC or option by name and jump to its implementation.
-- **Package situational awareness** — a one-page dashboard per package:
-  namespace and prefixes, size, PIKS mix, its top couplings with other
-  packages, and its biggest routines.
-- **Grounded citations** — every fact is a row in a versioned data release;
-  one click copies the exact citation line, the same format the vista-meta
-  MCP servers and AI agents use.
+MUMPS gives you none of the safety rails modern languages take for granted —
+no imports, no types, no module boundaries. A routine's dependencies, its
+callers, and the meaning of the data it touches are simply **not visible in
+the source you're editing**. In a 30,000-routine, 100+-package system that
+runs patient care, working without that visibility isn't slower — it's how
+regressions ship. Compass restores it:
+
+- **You cannot see who calls the code you're changing.** There is no
+  compiler to catch a broken caller; `TAG^ROUTINE` call sites hide behind
+  indirection and 2–4-character names that make grep useless. Compass gives
+  you the *measured* call graph: every caller, every callee, with reference
+  counts — before you touch a line.
+- **You cannot tell what a global is from its name.** `^DPT(`, `^PSRX(`,
+  `^OR(` carry no hint of which FileMan file they are or whether a subscript
+  away from patient data. Compass resolves every global to its file and
+  **PIKS class** (Patient / Institution / Knowledge / System), down to
+  field-level pointer flags and sensitive-field counts — so you know you're
+  near patient data *before* you edit, not in the incident review.
+- **The knowledge you'd normally ask for is walking out the door.** The
+  developers who hold VistA's structure in their heads are retiring. The
+  sidebar's cold-open briefing — package, size, fan-in/out, entry points,
+  RPC/option exposure, lint findings — replaces the hallway question there's
+  no longer anyone to ask.
+- **Impact analysis is otherwise a running-system exercise.** XINDEX runs
+  and FileMan data-dictionary sessions need a live VistA and roll-and-scroll
+  terminals. Compass ships the same facts pre-measured, offline, in your
+  editor — no instance, no Docker, no terminal emulator.
+- **A routine's public API is invisible.** Nothing in the source marks that
+  an RPC broker call or a menu option lands on this tag; changing it breaks
+  CPRS clients you never knew existed. Compass lists every RPC, option, and
+  protocol wired into the routine, and finds any of them by name.
+- **Cross-package coupling is where VistA changes go wrong.** The package
+  dashboard shows exactly which other packages call into yours and which you
+  depend on — measured edge counts, not folklore — before you commit to a
+  change that ripples.
+- **Claims about VistA need receipts.** Every fact Compass shows is a row in
+  a checksummed, versioned data release; one click copies the exact citation
+  — the same format the vista-meta MCP servers and AI agents emit — so code
+  reviews and design docs can cite the system instead of asserting about it.
 
 ## Features
 
