@@ -1,3 +1,7 @@
+---
+status: accepted
+---
+
 # Vista Compass v2 — implementation tracker
 
 Live status of the phased build. Governing design:
