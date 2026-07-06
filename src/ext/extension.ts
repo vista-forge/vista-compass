@@ -22,6 +22,7 @@ import {
   TagDocumentSymbolProvider,
 } from './providers.js';
 import { RoutineTreeProvider, type TreeConfig } from './treeProvider.js';
+import { pinsHandshake, registerTwinLink } from './twin.js';
 
 const DB_ASSET = 'vista-meta-data-v1.db';
 
@@ -145,8 +146,37 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   registerCommands(context, getStore, getHostRoot);
   registerDiagnostics(context, getStore, () => config().get<boolean>('xindexAsDiagnostics', false));
 
+  // Twin-link contract v1 (P5): Compass command surface, URI handler,
+  // cross-jump glue, seeded search, copy-citation.
+  registerTwinLink(context, {
+    getStore,
+    getHostRoot,
+    findRoutineFor: (kind, key) => {
+      if (store === undefined) {
+        return undefined;
+      }
+      const table = kind === 'rpc' ? 'rpcs' : 'options';
+      const row = store.get(`SELECT routine_name FROM ${table} WHERE name = ?`, key);
+      return row === undefined ? undefined : String(row.routine_name ?? '');
+    },
+  });
+
   await openData(context, view);
   setFromEditor(vscode.window.activeTextEditor);
+
+  // Gate-R mutual-pin handshake (§6.1) — after data is open, non-blocking.
+  const record = loadReleaseRecord(
+    context.asAbsolutePath('contracts/releases/vista-meta-data-v1.json'),
+  );
+  const meta = new Map(
+    (store as Store | undefined)
+      ?.all('SELECT key, value FROM meta')
+      .map((row) => [String(row.key), String(row.value)]) ?? [],
+  );
+  void pinsHandshake(record, context.globalStorageUri.fsPath, {
+    tag: meta.get('tag') ?? '',
+    contentHash: meta.get('content_hash') ?? '',
+  });
 }
 
 export function deactivate(): void {

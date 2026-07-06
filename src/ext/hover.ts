@@ -5,12 +5,30 @@
  */
 
 import * as vscode from 'vscode';
+import { citationFor } from '../model/citation.js';
 import { isRoutine, routineNameFromPath, tagCallers, tagExists } from '../model/lookup.js';
 import { classifyToken } from '../model/mumps.js';
+import type { BridgeEntityType } from '../model/package.js';
 import { fieldPiksForFile, mentionCount } from '../model/package.js';
+import type { CardLinks } from '../model/render.js';
 import { renderGlobalCard, renderRoutineCard, renderTagCard } from '../model/render.js';
 import { analyze, globalCard } from '../model/routine.js';
 import type { Store } from '../store/engine.js';
+import { atlasPresent } from './twin.js';
+
+function commandUri(command: string, args: readonly unknown[]): string {
+  return `command:${command}?${encodeURIComponent(JSON.stringify(args))}`;
+}
+
+function cardLinks(store: Store, kind: BridgeEntityType, name: string): CardLinks {
+  const entityKey = kind === 'global' ? `^${name}` : name;
+  return {
+    ...(atlasPresent()
+      ? { atlas: commandUri('vistaCompass.openInAtlas', [`${kind}:${entityKey}`, name]) }
+      : {}),
+    copyCitation: commandUri('vistaCompass.copyCitation', [citationFor(store, kind, name)]),
+  };
+}
 
 export class CompassHoverProvider implements vscode.HoverProvider {
   constructor(
@@ -37,6 +55,7 @@ export class CompassHoverProvider implements vscode.HoverProvider {
         markdown = renderRoutineCard(info, {
           topN: this.getTopN(),
           mentions: mentionCount(store, 'routine', classified.name),
+          links: cardLinks(store, 'routine', classified.name),
           ...(tag === undefined
             ? {}
             : { tagBadge: { tag, exists: tagExists(store, classified.name, tag) } }),
@@ -52,6 +71,7 @@ export class CompassHoverProvider implements vscode.HoverProvider {
           markdown = renderGlobalCard(card, {
             mentions: mentionCount(store, 'global', classified.name),
             fieldPiks,
+            links: cardLinks(store, 'global', classified.name),
           });
         }
         break;
@@ -68,8 +88,14 @@ export class CompassHoverProvider implements vscode.HoverProvider {
         break;
       }
     }
-    return markdown === undefined
-      ? undefined
-      : new vscode.Hover(new vscode.MarkdownString(markdown));
+    if (markdown === undefined) {
+      return undefined;
+    }
+    const rendered = new vscode.MarkdownString(markdown);
+    // Command links on the cards are ours alone; scope trust to them.
+    rendered.isTrusted = {
+      enabledCommands: ['vistaCompass.openInAtlas', 'vistaCompass.copyCitation'],
+    };
+    return new vscode.Hover(rendered);
   }
 }

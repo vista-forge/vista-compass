@@ -6,7 +6,7 @@
  * check` (needs a display + installed VSCode 1.125+).
  */
 
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runTests } from '@vscode/test-electron';
@@ -32,10 +32,22 @@ writeFileSync(
   }),
 );
 
+// A scratch extensions dir holding ONLY the Atlas twin (symlinked from
+// the real install), so the twin-link seam is exercised without noise
+// from unrelated installed extensions.
+const extensionsDir = join(workspace, 'extensions');
+mkdirSync(extensionsDir, { recursive: true });
+const realExtensions = join(homedir(), '.vscode/extensions');
+for (const entry of readdirSync(realExtensions)) {
+  if (entry.startsWith('vista-forge.vista-atlas-')) {
+    symlinkSync(join(realExtensions, entry), join(extensionsDir, entry));
+  }
+}
+
 await runTests({
   vscodeExecutablePath: VSCODE_BIN,
   extensionDevelopmentPath: repoRoot,
   extensionTestsPath: join(repoRoot, 'dist/smoke-suite.cjs'),
-  launchArgs: [workspace, '--disable-extensions', '--disable-gpu'],
+  launchArgs: [workspace, '--extensions-dir', extensionsDir, '--disable-gpu'],
   extensionTestsEnv: { COMPASS_SMOKE_FILE: smokeFile },
 });

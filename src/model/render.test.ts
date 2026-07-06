@@ -72,6 +72,21 @@ describe('renderRoutineCard', () => {
     assert.doesNotMatch(renderRoutineCard(INFO, { mentions: 0 }), /documented in/);
   });
 
+  it('linkifies the mentions line and adds copy-citation when links are given', () => {
+    const md = renderRoutineCard(INFO, {
+      mentions: 42,
+      links: { atlas: 'command:x?%5B%5D', copyCitation: 'command:y?%5B%5D' },
+    });
+    assert.match(md, /\[documented in 42 docs → Atlas\]\(command:x\?%5B%5D\)/);
+    assert.match(md, /\[copy citation\]\(command:y\?%5B%5D\)/);
+  });
+
+  it('copy-citation link renders even with zero mentions', () => {
+    const md = renderRoutineCard(INFO, { mentions: 0, links: { copyCitation: 'command:y' } });
+    assert.doesNotMatch(md, /documented in/);
+    assert.match(md, /\[copy citation\]\(command:y\)/);
+  });
+
   it('renders a not-measured card when there is no header', () => {
     const md = renderRoutineCard({ ...INFO, header: undefined }, {});
     assert.match(md, /PRCA45PT/);
@@ -123,6 +138,15 @@ describe('renderGlobalCard', () => {
 
   it('adds the documented-in-N-docs line when mentions are given', () => {
     assert.match(renderGlobalCard(card, { mentions: 120 }), /documented in 120 docs/);
+  });
+
+  it('linkifies the global mentions line when links are given', () => {
+    const md = renderGlobalCard(card, {
+      mentions: 120,
+      links: { atlas: 'command:a', copyCitation: 'command:c' },
+    });
+    assert.match(md, /\[documented in 120 docs → Atlas\]\(command:a\)/);
+    assert.match(md, /\[copy citation\]\(command:c\)/);
   });
 
   it('renders the field-PIKS drill-down per file when provided', () => {

@@ -1,7 +1,7 @@
 {
   "name": "vista-compass",
   "version": "0.3.0",
-  "description": "Vista Compass — VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
+  "description": "Vista Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
   "main": "./dist/extension.cjs",
   "types": "./dist/index.d.ts",
@@ -103,6 +103,14 @@
       {
         "command": "vistaCompass.packageDashboard",
         "title": "VistA Compass: Package Dashboard"
+      },
+      {
+        "command": "vistaCompass.search",
+        "title": "VistA Compass: Search Measured Model"
+      },
+      {
+        "command": "vistaCompass.findInDocs",
+        "title": "VistA Compass: Find in Docs (Vista Atlas)"
       }
     ],
     "menus": {
@@ -110,6 +118,13 @@
         {
           "command": "vistaCompass.refresh",
           "when": "view == 'vistaCompassRoutine'",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "vistaCompass.findInDocs",
+          "when": "resourceExtname == '.m'",
           "group": "navigation"
         }
       ]
@@ -138,7 +153,7 @@
         "vistaCompass.vistaMHostPath": {
           "type": "string",
           "default": "",
-          "description": "Host directory mirroring the container /opt/VistA-M tree (e.g. ~/projects/vista-meta/vista/vista-m-host) — enables click-to-open on callers/callees."
+          "description": "Host directory mirroring the container /opt/VistA-M tree (e.g. ~/projects/vista-meta/vista/vista-m-host) \u2014 enables click-to-open on callers/callees."
         },
         "vistaCompass.topN": {
           "type": "number",

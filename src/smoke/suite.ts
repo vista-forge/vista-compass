@@ -99,17 +99,59 @@ export async function run(): Promise<void> {
   assert.match(definition.uri.fsPath, /XPDUTL\.m$/, 'definition lands in XPDUTL.m');
   assert.ok(definition.range.start.line > 0, 'definition points at the BMES tag, not line 1');
 
-  // 8. The P4 commands are registered.
+  // 8. The P4 + P5 commands are registered.
   const commands = await vscode.commands.getCommands(true);
   for (const id of [
     'vistaCompass.findRpc',
     'vistaCompass.findOption',
     'vistaCompass.packageDashboard',
+    'vistaCompass.search',
+    'vistaCompass.lookup',
+    'vistaCompass.openEntity',
+    'vistaCompass.pins',
+    'vista.openCitation',
   ]) {
     assert.ok(commands.includes(id), `command registered: ${id}`);
   }
 
+  // ── P5: the twin-link seam, exercised against the REAL Atlas twin ──
+  // 9. The twin is present in this host.
+  assert.ok(
+    vscode.extensions.getExtension('vista-forge.vista-atlas'),
+    'vista-forge.vista-atlas installed and enabled',
+  );
+
+  // 10. Contract pins: Compass self-declares the Gate-R pair member.
+  const pins = (await vscode.commands.executeCommand('vistaCompass.pins')) as {
+    tag?: string;
+    content_hash?: string;
+  };
+  assert.equal(pins.tag, 'data-v1', 'pins.tag');
+  assert.match(pins.content_hash ?? '', /^23d037f1/, 'pins.content_hash');
+
+  // 11. Hover cards carry the cross-jump + copy-citation command links.
+  assert.match(
+    routineCard,
+    /documented in 107 docs → Atlas\]\(command:vistaCompass.openInAtlas/,
+    'atlas cross-jump link',
+  );
+  assert.match(
+    routineCard,
+    /\[copy citation\]\(command:vistaCompass.copyCitation/,
+    'copy-citation link',
+  );
+
+  // 12. vista.openCitation routes a measured citation to the source.
+  await vscode.commands.executeCommand('vista.openCitation', {
+    text: 'vista-meta data-v1 · code-model/routines.tsv · routine_name=XPDUTL',
+  });
+  assert.match(
+    vscode.window.activeTextEditor?.document.fileName ?? '',
+    /XPDUTL\.m$/,
+    'citation routed to XPDUTL.m',
+  );
+
   process.stdout.write(
-    'SMOKE PASS: activation, hover set + bridge mentions, outline, workspace symbols, definition, P4 commands\n',
+    'SMOKE PASS: P3 hover set, P4 surfaces, P5 twin-link (pins, cross-jump links, citation routing) with the real Atlas twin\n',
   );
 }

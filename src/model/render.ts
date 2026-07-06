@@ -7,12 +7,20 @@
 import type { FieldPiks } from './package.js';
 import type { CallerEdge, GlobalCard, RoutineInfo } from './routine.js';
 
+export interface CardLinks {
+  /** Command URI: cross-jump into Vista Atlas (twin present). */
+  readonly atlas?: string;
+  /** Command URI: copy the contract citation line. */
+  readonly copyCitation?: string;
+}
+
 export interface RoutineCardOptions {
   readonly topN?: number;
   /** Present when hovering TAG^RTN: the measured-tag badge. */
   readonly tagBadge?: { readonly tag: string; readonly exists: boolean };
   /** entity_bridge mention_count; > 0 adds "documented in N docs". */
   readonly mentions?: number;
+  readonly links?: CardLinks;
 }
 
 const fmt = new Intl.NumberFormat('en-US');
@@ -70,14 +78,23 @@ export function renderRoutineCard(info: RoutineInfo, options: RoutineCardOptions
         .join(', ')}`,
     );
   }
-  appendMentions(lines, options.mentions);
+  appendMentions(lines, options.mentions, options.links);
   return lines.join('\n');
 }
 
-function appendMentions(lines: string[], mentions: number | undefined): void {
+function appendMentions(
+  lines: string[],
+  mentions: number | undefined,
+  links: CardLinks | undefined,
+): void {
   if (mentions !== undefined && mentions > 0) {
+    const text = `documented in ${mentions} docs`;
     lines.push('');
-    lines.push(`documented in ${mentions} docs`);
+    lines.push(links?.atlas === undefined ? text : `[${text} → Atlas](${links.atlas})`);
+  }
+  if (links?.copyCitation !== undefined) {
+    lines.push('');
+    lines.push(`[copy citation](${links.copyCitation})`);
   }
 }
 
@@ -86,6 +103,7 @@ export interface GlobalCardOptionsRender {
   readonly mentions?: number;
   /** Field-level PIKS rows per file_number — the drill-down. */
   readonly fieldPiks?: Readonly<Record<string, readonly FieldPiks[]>>;
+  readonly links?: CardLinks;
 }
 
 /** The `^GLOBAL` hover card: who-references + FileMan → PIKS join. */
@@ -127,7 +145,7 @@ export function renderGlobalCard(card: GlobalCard, options: GlobalCardOptionsRen
     lines.push('');
     lines.push(`… ${card.moreFiles} more`);
   }
-  appendMentions(lines, options.mentions);
+  appendMentions(lines, options.mentions, options.links);
   return lines.join('\n');
 }
 
