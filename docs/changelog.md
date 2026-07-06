@@ -110,3 +110,12 @@ six months. Don't summarise diffs — the diff is the diff. Focus on
 
 - Owner visual walkthrough against the §2.1 wireframe (formal P3 close).
 - P4 surfaces (RPCs/options/protocols, dashboard, symbols, diagnostics).
+
+## 2026-07-05 — P3 formally closed: owner walkthrough PASS
+
+vsix installed and verified against the guide §2.1 wireframe on the
+real window. Two install-time findings: an already-open window needs a
+reload to see a CLI-installed extension, and the superseded 0.2.0
+predecessor had to be uninstalled — v2 keeps its view/command/settings
+identifiers by design, so the two cannot coexist (recorded in memory).
+Next: P4 surfaces.

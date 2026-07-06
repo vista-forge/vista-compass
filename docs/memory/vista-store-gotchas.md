@@ -31,6 +31,14 @@ Durable lessons from the P1 vista-store build (2026-07-05):
   download) caught both the bundle crash and the numeric-tag grammar
   gap that 148 unit tests could not.
 
+- **v2 cannot coexist with the 0.2.0 predecessor:** it deliberately
+  keeps the same view id (`vistaCompassRoutine`), command ids, and
+  settings keys (with different `dataPath` semantics: dir vs meta.db
+  file) — duplicate registration breaks whichever activates second.
+  `rafael5.vista-compass@0.2.0` was uninstalled 2026-07-05; never
+  reinstall it alongside v2. Also: a CLI `--install-extension` is
+  invisible to an already-open window until Reload Window.
+
 **Why:** all of these bit during P1/P3 (red gates / failed runs).
 **How to apply:** don't "fix" the row-copy in engine.ts as an
 optimization without re-running the deepEqual tests; when adding a new

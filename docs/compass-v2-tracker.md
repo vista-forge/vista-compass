@@ -16,7 +16,7 @@ org Tier-D rule when the effort lands.
 | P0 | Engine spike → `node:sqlite` decision | ✅ done 2026-07-05 (recorded in proposal §11) |
 | P1 | `vista-store` shared lib + twin-link contract v1 | ✅ **Compass side done 2026-07-05** — see below |
 | P2 | Atlas MVP (vdocs-web parity) | not started (vista-atlas repo) |
-| P3 | Compass v2 MVP (0.2.0 parity on meta.db) | ✅ **MVP landed 2026-07-05** — automated acceptance PASS; visual walkthrough = owner check (see below) |
+| P3 | Compass v2 MVP (0.2.0 parity on meta.db) | ✅ **CLOSED 2026-07-05** — automated acceptance PASS + owner walkthrough PASS |
 | P4 | Full-scope surfaces | blocked on P3 (+ P-vdocs 1 for Atlas) |
 | P5 | Twin-link features | blocked on P2+P3 |
 
@@ -83,9 +83,10 @@ bundle breaking on a top-level `import.meta.url`).
       inside the installed VSCode 1.125.1 against the real data-v1 db —
       activation + all three hover cards on the guide's PRCA45PT.
 - [x] `npm run vsix` → installable `vista-compass-0.1.0.vsix`.
-- [ ] **Owner visual walkthrough** (closes P3 formally): install the
-      vsix (`code --install-extension vista-compass-0.1.0.vsix`), open
-      the guide's PRCA45PT.m, compare against the §2.1 wireframe.
+- [x] **Owner visual walkthrough — PASSED 2026-07-05**: vsix installed,
+      PRCA45PT.m verified against the §2.1 wireframe. (Required
+      uninstalling the superseded `rafael5.vista-compass@0.2.0` — v2
+      keeps its identifiers by design, so they cannot coexist.)
 
 ## P4 — next in this repo
 
