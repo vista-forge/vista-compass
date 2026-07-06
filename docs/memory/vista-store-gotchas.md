@@ -39,6 +39,14 @@ Durable lessons from the P1 vista-store build (2026-07-05):
   reinstall it alongside v2. Also: a CLI `--install-extension` is
   invisible to an already-open window until Reload Window.
 
+- **Toolchain majors need config migration (Biome 2 / TS 6):** a
+  dependabot bump alone red-gates. Biome 2 drops `noConsoleLog` etc. —
+  run `npx biome migrate --write` (also enables assist/organizeImports;
+  expect a one-time import-order sweep). TypeScript 6 no longer
+  auto-includes `@types/*` — add `"types": ["node", "vscode"]` to
+  tsconfig `compilerOptions`. Same medicine applies to vista-atlas
+  (same template).
+
 **Why:** all of these bit during P1/P3 (red gates / failed runs).
 **How to apply:** don't "fix" the row-copy in engine.ts as an
 optimization without re-running the deepEqual tests; when adding a new

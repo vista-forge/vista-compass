@@ -136,3 +136,11 @@ real release. Version 0.3.0 (predecessor froze at 0.2.0).
 **Deferred:** signature help (needs bake formals, Track P-vm 2); P5
 twin-link features (needs vista-atlas); Tier D (CodeLens, completion,
 status bar).
+
+## 2026-07-06 — toolchain bump: Biome 2.5, TypeScript 6, @types/node 26, c8 11
+
+Landed directly on main (supersedes dependabot PR #4, which failed CI
+on the Biome 2 config schema). Migration: `biome migrate --write`
+(new schema, assist/organizeImports — one-time import-order sweep over
+12 files) and an explicit tsconfig `types: [node, vscode]` (TS 6
+stopped auto-including @types). Full gate + in-VSCode smoke green.
