@@ -150,7 +150,10 @@ yet (its entity tier is P4-gated) — Compass degrades per §6.1.
 - [x] Gate-R mutual-pin handshake on activation: own meta pins and the
       twin's `vistaAtlas.pins` compared against the
       `entity-bridge.meta.json` pin pair (fetch-verified as a pinned
-      release asset); warns on release-pair drift.
+      release asset); warns on release-pair drift. Drift decision is the
+      pure, unit-tested `releaseDriftProblems()`; empty Atlas pins (twin
+      not yet panel-opened) are treated as not-loaded, not drift, so no
+      spurious warning fires at activation (fixed dd9fdec, 2026-07-06).
 - [x] Copy-citation on routine/global hover cards — the exact contract
       line, bridge row preferred (`citationFor`, TDD'd).
 - [x] **Smoke PASS with the REAL Atlas twin** (scratch extensions dir
