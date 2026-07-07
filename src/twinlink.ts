@@ -103,6 +103,67 @@ export function validatePayload(
   return { ok: problems.length === 0, problems };
 }
 
+/** The authoritative pin pair carried by the bridge meta asset. */
+export interface BridgePins {
+  readonly vdocs?: { readonly tag?: string; readonly corpus_content_hash?: string };
+  readonly vista_meta?: { readonly tag?: string; readonly content_hash?: string };
+}
+
+/** Compass's own live data pins. */
+export interface OwnPins {
+  readonly tag: string;
+  readonly contentHash: string;
+}
+
+/** Atlas's live data pins, as returned by the vistaAtlas.pins command. */
+export interface AtlasPins {
+  readonly tag?: string;
+  readonly corpus_content_hash?: string;
+}
+
+/**
+ * Gate-R release-pair drift check (proposal §6.1) as a pure function so it is
+ * unit-testable without the extension host. The bridge meta's pin pair is the
+ * authority; each live twin that disagrees produces a problem string. Empty =
+ * in sync.
+ *
+ * Atlas populates its pins only once its navigator panel first opens, so
+ * empty/absent Atlas pins mean "not loaded yet", not drift — the vdocs-side
+ * comparison is skipped rather than reported as a mismatch.
+ */
+export function releaseDriftProblems(
+  bridgePins: BridgePins,
+  ownPins: OwnPins,
+  atlasPins: AtlasPins | undefined,
+): string[] {
+  const problems: string[] = [];
+  const expectedMeta = bridgePins.vista_meta;
+  if (expectedMeta?.tag !== undefined && expectedMeta.tag !== ownPins.tag) {
+    problems.push(`own data ${ownPins.tag} vs bridge pin ${expectedMeta.tag}`);
+  }
+  if (
+    expectedMeta?.content_hash !== undefined &&
+    expectedMeta.content_hash !== ownPins.contentHash
+  ) {
+    problems.push('own content_hash differs from the bridge pin');
+  }
+  // Only compare the Atlas side once Atlas has actually loaded a corpus.
+  if (atlasPins !== undefined && (atlasPins.tag || atlasPins.corpus_content_hash)) {
+    const expectedDocs = bridgePins.vdocs;
+    if (atlasPins.tag && expectedDocs?.tag !== undefined && atlasPins.tag !== expectedDocs.tag) {
+      problems.push(`Atlas corpus ${atlasPins.tag} vs bridge pin ${expectedDocs.tag}`);
+    }
+    if (
+      atlasPins.corpus_content_hash &&
+      expectedDocs?.corpus_content_hash !== undefined &&
+      atlasPins.corpus_content_hash !== expectedDocs.corpus_content_hash
+    ) {
+      problems.push('Atlas corpus_content_hash differs from the bridge pin');
+    }
+  }
+  return problems;
+}
+
 export type Citation =
   | { readonly source: 'vdocs'; readonly section_id: string }
   | {

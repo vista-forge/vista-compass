@@ -17,7 +17,13 @@ import { searchTags } from '../model/symbols.js';
 import type { Store } from '../store/engine.js';
 import { ensureAsset } from '../store/fetch.js';
 import type { ReleaseRecord } from '../store/release.js';
-import { loadTwinLinkContract, parseCitation, parseDeepLink } from '../twinlink.js';
+import type { AtlasPins, BridgePins } from '../twinlink.js';
+import {
+  loadTwinLinkContract,
+  parseCitation,
+  parseDeepLink,
+  releaseDriftProblems,
+} from '../twinlink.js';
 import { routineLocation } from './nav.js';
 
 const ATLAS_ID = 'vista-forge.vista-atlas';
@@ -53,14 +59,11 @@ export async function openInAtlas(entityId: string, query: string): Promise<void
   }
 }
 
-interface BridgePins {
-  readonly vdocs?: { readonly tag?: string; readonly corpus_content_hash?: string };
-  readonly vista_meta?: { readonly tag?: string; readonly content_hash?: string };
-}
-
 /**
  * Gate-R mutual-pin handshake: the bridge meta's pin pair is the
- * authority; warn when either side's live data disagrees with it.
+ * authority; warn when either side's live data disagrees with it. The
+ * drift decision itself is the pure releaseDriftProblems() — this
+ * function only gathers the live pins and surfaces the result.
  */
 export async function pinsHandshake(
   record: ReleaseRecord,
@@ -74,42 +77,16 @@ export async function pinsHandshake(
   } catch {
     return; // no bridge spec available — nothing to check against
   }
-  const problems: string[] = [];
-  const expectedMeta = bridgePins.vista_meta;
-  if (expectedMeta?.tag !== undefined && expectedMeta.tag !== ownPins.tag) {
-    problems.push(`own data ${ownPins.tag} vs bridge pin ${expectedMeta.tag}`);
-  }
-  if (
-    expectedMeta?.content_hash !== undefined &&
-    expectedMeta.content_hash !== ownPins.contentHash
-  ) {
-    problems.push('own content_hash differs from the bridge pin');
-  }
+  let atlasPins: AtlasPins | undefined;
   if (atlasPresent()) {
     try {
       const run = await atlasCommand();
-      const atlasPins = (await run('vistaAtlas.pins', undefined)) as
-        | { tag?: string; corpus_content_hash?: string }
-        | undefined;
-      const expectedDocs = bridgePins.vdocs;
-      if (
-        atlasPins?.tag !== undefined &&
-        expectedDocs?.tag !== undefined &&
-        atlasPins.tag !== expectedDocs.tag
-      ) {
-        problems.push(`Atlas corpus ${atlasPins.tag} vs bridge pin ${expectedDocs.tag}`);
-      }
-      if (
-        atlasPins?.corpus_content_hash !== undefined &&
-        expectedDocs?.corpus_content_hash !== undefined &&
-        atlasPins.corpus_content_hash !== expectedDocs.corpus_content_hash
-      ) {
-        problems.push('Atlas corpus_content_hash differs from the bridge pin');
-      }
+      atlasPins = (await run('vistaAtlas.pins', undefined)) as AtlasPins | undefined;
     } catch {
       // Atlas present but pins unavailable — not a drift signal.
     }
   }
+  const problems = releaseDriftProblems(bridgePins, ownPins, atlasPins);
   if (problems.length > 0) {
     vscode.window.showWarningMessage(
       `VistA Compass: release-pair drift — ${problems.join('; ')}. Cross-links may mislead.`,

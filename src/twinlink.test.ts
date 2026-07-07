@@ -5,6 +5,7 @@ import {
   loadTwinLinkContract,
   parseCitation,
   parseDeepLink,
+  releaseDriftProblems,
   validatePayload,
 } from './twinlink.ts';
 
@@ -238,5 +239,60 @@ describe('deep links', () => {
       () => parseDeepLink(contract, 'vscode://vista-forge.vista-compass/teleport?x=1'),
       /path/,
     );
+  });
+});
+
+describe('releaseDriftProblems', () => {
+  const inSync = {
+    vdocs: { tag: 'data-v1', corpus_content_hash: 'a'.repeat(64) },
+    vista_meta: { tag: 'data-v1', content_hash: 'b'.repeat(64) },
+  };
+  const own = { tag: 'data-v1', contentHash: 'b'.repeat(64) };
+  const atlasLoaded = { tag: 'data-v1', corpus_content_hash: 'a'.repeat(64) };
+
+  it('reports nothing when both twins match the bridge pin', () => {
+    assert.deepEqual(releaseDriftProblems(inSync, own, atlasLoaded), []);
+  });
+
+  it('treats empty Atlas pins as not-yet-loaded, not drift', () => {
+    // Atlas populates its pins only once its navigator panel opens; before
+    // that vistaAtlas.pins returns empty strings — must not warn (the bug).
+    assert.deepEqual(releaseDriftProblems(inSync, own, { tag: '', corpus_content_hash: '' }), []);
+  });
+
+  it('treats an absent Atlas pin response as not-yet-loaded', () => {
+    assert.deepEqual(releaseDriftProblems(inSync, own, undefined), []);
+  });
+
+  it('flags a genuine Atlas tag mismatch with the real tag', () => {
+    const problems = releaseDriftProblems(inSync, own, {
+      tag: 'data-v0',
+      corpus_content_hash: 'a'.repeat(64),
+    });
+    assert.deepEqual(problems, ['Atlas corpus data-v0 vs bridge pin data-v1']);
+  });
+
+  it('flags a genuine Atlas content-hash mismatch', () => {
+    const problems = releaseDriftProblems(inSync, own, {
+      tag: 'data-v1',
+      corpus_content_hash: 'c'.repeat(64),
+    });
+    assert.deepEqual(problems, ['Atlas corpus_content_hash differs from the bridge pin']);
+  });
+
+  it('flags own-side drift independent of Atlas', () => {
+    const problems = releaseDriftProblems(
+      inSync,
+      { tag: 'data-v0', contentHash: 'z'.repeat(64) },
+      atlasLoaded,
+    );
+    assert.deepEqual(problems, [
+      'own data data-v0 vs bridge pin data-v1',
+      'own content_hash differs from the bridge pin',
+    ]);
+  });
+
+  it('checks nothing when the bridge spec carries no pins', () => {
+    assert.deepEqual(releaseDriftProblems({}, own, atlasLoaded), []);
   });
 });
