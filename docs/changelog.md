@@ -170,3 +170,18 @@ on click (no file I/O per sidebar render) and shows a helpful message
 when `vistaCompass.vistaMHostPath` is unset or the source isn't found —
 previously a callee click was a silent dead-click without that setting,
 and opened line 1 rather than the tag with it. Smoke extended.
+
+## 2026-07-06 — fix: no spurious release-pair drift on unloaded Atlas (v0.4.2)
+
+The Gate-R handshake fired at Compass activation, before Atlas had
+opened its navigator panel. Atlas populates its pins only in
+`startSessionServer` (first panel open), so `vistaAtlas.pins` returned
+the default `{ tag:'', corpus_content_hash:'' }` — which the handshake
+compared against the bridge pin and read as drift, popping a bogus
+"release-pair drift — Atlas corpus ␣ vs bridge pin data-v1" warning
+with a blank tag. The drift decision is now the pure, unit-tested
+`releaseDriftProblems()` in twinlink.ts, which treats empty Atlas pins
+as not-loaded-yet (skip the vdocs-side compare) rather than drift.
+Genuine mismatches (a real differing tag/hash) still warn. Smoke §13
+proves it against the real installed twin: unloaded Atlas reports empty
+pins and the shared decision returns no drift.

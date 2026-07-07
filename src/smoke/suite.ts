@@ -7,6 +7,7 @@
 
 import { strict as assert } from 'node:assert';
 import * as vscode from 'vscode';
+import { releaseDriftProblems } from '../twinlink.js';
 
 function positionOf(
   doc: vscode.TextDocument,
@@ -33,6 +34,22 @@ async function hoverMarkdown(doc: vscode.TextDocument, pos: vscode.Position): Pr
 export async function run(): Promise<void> {
   const file = process.env.COMPASS_SMOKE_FILE;
   assert.ok(file, 'COMPASS_SMOKE_FILE set');
+
+  // Capture any warning toast raised from here on — the Gate-R handshake
+  // runs (fire-and-forget) during activation just below, so the spy must
+  // be in place before we activate. Used by the regression check (§13).
+  const warnings: string[] = [];
+  const originalShowWarning = vscode.window.showWarningMessage.bind(vscode.window);
+  (vscode.window as { showWarningMessage: unknown }).showWarningMessage = (
+    message: string,
+    ...rest: unknown[]
+  ) => {
+    warnings.push(message);
+    return (originalShowWarning as (m: string, ...r: unknown[]) => Thenable<unknown>)(
+      message,
+      ...rest,
+    );
+  };
 
   const extension = vscode.extensions.getExtension('vista-forge.vista-compass');
   assert.ok(extension, 'vista-forge.vista-compass present in the host');
@@ -166,7 +183,45 @@ export async function run(): Promise<void> {
     'citation routed to XPDUTL.m',
   );
 
+  // 13. Regression — the release-pair drift false positive (fix dd9fdec).
+  // The real Atlas twin is installed but its navigator panel was never
+  // opened, so vistaAtlas.pins still reports the unloaded default. That is
+  // the exact condition that made the old handshake pop a spurious
+  // "release-pair drift — Atlas corpus ␣ vs bridge pin data-v1" warning.
+  // Activate the twin (as the handshake's atlasCommand() does) without
+  // opening its panel, so its pins command is registered but still empty.
+  const atlas = vscode.extensions.getExtension('vista-forge.vista-atlas');
+  assert.ok(atlas, 'vista-forge.vista-atlas present for the drift regression');
+  await atlas.activate();
+  const atlasPins = (await vscode.commands.executeCommand('vistaAtlas.pins')) as {
+    tag?: string;
+    corpus_content_hash?: string;
+  };
+  assert.deepEqual(
+    atlasPins,
+    { tag: '', corpus_content_hash: '' },
+    `the bug trigger is present: unloaded Atlas reports empty pins, got: ${JSON.stringify(atlasPins)}`,
+  );
+  // Given those real unloaded pins and a bridge that pins the vdocs
+  // release, the shared drift decision must be empty — no false positive.
+  const drift = releaseDriftProblems(
+    {
+      vdocs: { tag: 'data-v1', corpus_content_hash: 'f'.repeat(64) },
+      vista_meta: { tag: 'data-v1', content_hash: pins.content_hash ?? '' },
+    },
+    { tag: pins.tag ?? '', contentHash: pins.content_hash ?? '' },
+    atlasPins,
+  );
+  assert.deepEqual(drift, [], `no drift for unloaded Atlas pins, got: ${JSON.stringify(drift)}`);
+  // Let the fire-and-forget handshake settle, then confirm no drift toast
+  // was surfaced during activation.
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  assert.ok(
+    !warnings.some((w) => /release-pair drift/.test(w)),
+    `no release-pair drift warning fired during activation, saw: ${JSON.stringify(warnings)}`,
+  );
+
   process.stdout.write(
-    'SMOKE PASS: P3 hover set, P4 surfaces, P5 twin-link (pins, cross-jump links, citation routing) with the real Atlas twin\n',
+    'SMOKE PASS: P3 hover set, P4 surfaces, P5 twin-link (pins, cross-jump links, citation routing) with the real Atlas twin; §13 release-pair drift regression clear\n',
   );
 }
