@@ -25,9 +25,16 @@ Compass is Tier 2 of a deliberately separated three-tier tool family
 engine-neutral M tool must never learn VistA specifics; all VistA
 knowledge stays in tiers 2–3.
 
-**Where the plans live now:** the full session output (competitive
-analysis, the M-tool phased plan, the VistA-helper sketch) is captured
-in [`docs/planning-guide.md`](../planning-guide.md) **in this repo**,
-because the sibling repos are not yet stood up. It migrates to each
-tool's own `docs/proposals/` when those repos exist. See also
-[[vista-store-gotchas]].
+**Where the plans live:**
+- **Tier 1 (engine-neutral M tool)** — full plan lives in **m-cli**:
+  `m-cli/docs/proposals/engine-neutral-m-tooling-plan.md` (relocated
+  2026-07-07 from Compass's planning guide, which now links to it). The
+  VSCode extension it grows is still in the winding-down
+  `~/m-dev-tools/tree-sitter-m-vscode` and is to be promoted into a new
+  `vista-forge` non-waterline repo.
+- **Tier 2 roadmap + tier overview** — this repo's
+  [`docs/planning-guide.md`](../planning-guide.md).
+- **Tier 3 (VistA helper)** — sketched in the planning guide; migrates to
+  its own repo when stood up.
+
+See also [[vista-store-gotchas]].

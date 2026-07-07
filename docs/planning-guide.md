@@ -187,90 +187,22 @@ axes no competitor touches — **static/web-capable** operation and
 
 ## 6 · Sibling effort — the engine-neutral M language tool
 
-*Separate repo/product. Captured here so the session's plan is not lost;
-detail migrates to that repo's `docs/proposals/` when it is stood up.*
+*Tier 1 of the family — a separate, engine-neutral product (no VistA).
+Its full plan now lives with the engine it concerns, in **m-cli**:*
 
-### 6.1 The opportunity (from the marketplace analysis)
+> **[m-cli · Engine-neutral M developer tooling — the superset plan](https://github.com/vista-forge/m-cli/blob/main/docs/proposals/engine-neutral-m-tooling-plan.md)**
 
-The native-M tier on the Marketplace is thin and mostly stale. Only two
-tools are alive: `jewuma.mumps-debug` (best native debugger + globals/
-locks/jobs introspection, **YottaDB/GT.M only**) and `dopamind.mforge`
-(VistA-aware IDE, immature debugger, YottaDB direct-mode). Every *rich*
-feature — rename, code actions, deep semantic diagnostics, extract
-method, a Test Explorer, coverage, watchpoints, server-side edit —
-exists **only** behind the InterSystems IRIS engine-lock
-(`intersystems.language-server`, `vscode-objectscript`, Serenji,
-Testing Manager) and is unavailable to YottaDB/GT.M/VistA. Notably,
-**Serenji's YottaDB support appears dropped** (its listing is IRIS/Caché
-only now), so a cross-engine step debugger does *not* currently exist.
-
-### 6.2 The unfair advantage (assets that already exist)
-
-An inventory of the existing `vista-forge` M toolchain found that the
-hardest, most valuable pieces are **already built** — the competition
-lacks them:
-
-| Asset | Reality | Nobody else has |
-|---|---|---|
-| **tree-sitter-m parser** | 99.06% clean on the full 39,330-routine VistA corpus; dialect-aware (YottaDB + IRIS-M); fast | Every native competitor uses regex grammars; only IRIS's LSP has a real parser, and it's IRIS-locked |
-| **AST linter (`m lint`)** | 35+ rules incl. correctness/security/concurrency (LOCK-leak, TSTART-leak, taint→indirection, un-NEWed read, `$ETRAP`-without-NEW), JSON output | Deeper than anything in the native tier; engine-neutral where IRIS's is locked |
-| **Working LSP (`m lsp`)** | Go, wired into VSCode today, live diagnostics + formatting, CLI/editor rule parity | ZaneHambly's LSP has *no diagnostics at all* |
-| **Test + coverage** | `m test`/`m coverage`, JSON + LCOV, on **both** YDB and IRIS | No native M tool has a test runner or coverage at all |
-| **Driver seam** | `m-driver-sdk` + m-ydb/m-iris: engine-neutral exec / ReadGlobal / SetGlobal + structured `EngineError{routine,line,mnemonic,text}` | Foundation for the only cross-engine debugger + introspection possible |
-
-### 6.3 Three moats
-
-1. **Parser-accuracy** — real AST → precise semantic tokens, symbols,
-   definition/references, call-graph-aware rename, quick-fixes.
-2. **Engine-neutrality** — the driver seam makes it the only tool able to
-   test/cover/introspect/debug **both YottaDB and IRIS** (jewuma = YDB
-   only; Serenji = IRIS only). This is the "the VA runs on IRIS, so a
-   YottaDB-only tool is a non-starter" problem solved *architecturally*.
-3. **TDD/quality** — test + coverage already exist; a native M Test
-   Explorer + coverage gutters is a category no native competitor
-   occupies.
-
-### 6.4 Phased plan (debugger deferred by owner decision)
-
-| Phase | Work | Leverage / risk |
-|---|---|---|
-| **0 — De-drift + publish** | Fix the extension's stale About (0.1.0)/CHANGELOG, remove advertised-but-absent code-action/CodeLens claims, **bundle `m-cli` per-platform**, publish the diagnostics+format LSP | **The highest-value move.** Zero new engineering — ships the deepest M linter on the Marketplace. See §6.5 |
-| **1 — Full LSP surface** | Promote semantic tokens server-side; add hover, completion, document/workspace symbols, definition, references, folding — mostly *exposing* what the AST + existing workspace index already know | Low risk, high leverage; vaults past jewuma/dopamind on language intelligence |
-| **2 — Code actions + rename + formatter presets** | Quick-fixes for the linter's own rules (auto-NEW, add LOCK/READ timeout, tab→spaces, uppercase Z-command); call-graph-aware rename (a feature *no* tool has); wire pythonic/compact/sac formatter presets; CodeLens "run suite / N% covered" | Enters territory only IRIS's LSP occupies — engine-neutrally |
-| **3 — Test Explorer + coverage gutters** | Surface `*TST.m` suites in the native Test Explorer; coverage line markers; both engines | Category-defining — absent from the entire native tier |
-| **4 — Cross-engine live introspection** | Globals/locks/jobs browser like jewuma's, but cross-engine, standalone (not debug-only), and editable/queryable | Beats jewuma on all three axes |
-| **5 — Cross-engine debugger (DEFERRED)** | New `debug` axis in `m-driver-sdk`; YottaDB `$ZSTEP`/`ZBREAK` through the seam; IRIS debug service (spike first); DAP adapter; watchpoints | Greenfield, months, hardest lift. **Deferred by owner decision** — the tool leads on everything *except* interactive stepping without it |
-
-### 6.5 The highest-value move (with what exists today)
-
-**Publish the correctness linter as a shipped LSP, and lead with
-engine-neutral bug-finding as the headline.** The `m lsp` diagnostics
-path is already built and wired end-to-end; the work is *publishing*, not
-building:
-
-1. De-drift the extension (About string, CHANGELOG, phantom code-action
-   claims).
-2. **Bundle the per-platform `m-cli` binaries into the VSIX** (gopls-style)
-   so diagnostics are self-contained — the one distribution wrinkle,
-   since diagnostics come from the `m lsp` subprocess.
-3. Rewrite the listing around the correctness rules (what it catches that
-   others don't), with a comparison table.
-4. Publish.
-
-The near-free follow-on is Phase 1's definition/references/symbols — the
-workspace index already resolves `LABEL^ROUTINE`, so it is mostly
-surfacing, not new computation.
-
-### 6.6 Placement (recommended)
-
-- **Debug transport** (Phase 5): new axis in `m-driver-sdk` + m-ydb/m-iris
-  (waterline work).
-- **LSP/DAP server**: stays in `m-cli` (`m lsp` grows; add `m dap`).
-- **The VSCode extension**: promote out of `~/m-dev-tools/` (winding
-  down) into a new `vista-forge` **non-waterline** repo (it spawns
-  `m-cli`; it never touches an engine directly). Keep the `m` /
-  `source.m` language-id so it coexists with the debuggers rather than
-  fighting for `.m`.
+In one paragraph: make the most feature-rich M **linter + LSP +
+(deferred) debugger** on the Marketplace, built on assets that already
+exist (`m lint` / `m lsp` / `m test` / `m coverage`, `tree-sitter-m`, the
+`tree-sitter-m-vscode` extension). The native-M tier is thin and stale;
+every rich feature elsewhere is IRIS-engine-locked. The three moats:
+**parser-accuracy**, **engine-neutrality** (YottaDB *and* IRIS via the
+driver seam — the "the VA runs on IRIS" problem solved architecturally),
+and a **native Test Explorer + coverage** no competitor has. Highest-value
+move: publish the already-built correctness-linter LSP. Debugger deferred.
+Full phasing, the asset inventory, and placement are in the linked
+proposal.
 
 ---
 
