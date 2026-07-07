@@ -185,3 +185,28 @@ as not-loaded-yet (skip the vdocs-side compare) rather than drift.
 Genuine mismatches (a real differing tag/hash) still warn. Smoke §13
 proves it against the real installed twin: unloaded Atlas reports empty
 pins and the shared decision returns no drift.
+
+## 2026-07-07 — docs: user guide + planning guide; drop stale vsix builds
+
+**Done:**
+
+- Added [`docs/user-guide.md`](user-guide.md) — a task-oriented end-user
+  guide covering install, first-run data verification, every feature
+  (sidebar/hovers/nav/search/dashboard/diagnostics), the Atlas twin
+  integration, citations, deep-link URIs, and troubleshooting.
+- Added [`docs/planning-guide.md`](planning-guide.md) — the forward
+  roadmap. Records the three-tier tool family (engine-neutral M tool /
+  Compass+Atlas / VistA helper), Compass's own roadmap + recommended new
+  features + known-issue watch list, and — captured so nothing is lost —
+  the plans for the sibling efforts from the 2026-07 marketplace-analysis
+  session (the M language LSP/linter/debugger tool and its highest-value
+  "publish the linter" move; the planned VistA developer helper).
+- README gained a Documentation table pointing at all four docs.
+- Removed the older packaged builds (`vista-compass-0.1.0/0.3.0/0.4.0/
+  0.4.1.vsix`); only the current `0.4.2` vsix remains. (These are
+  gitignored local artifacts — housekeeping, not a tracked change.)
+
+**Note:** docs-only + local-artifact cleanup — no source, no version
+bump. The sibling-effort plans live here for now because those repos are
+not yet stood up; they migrate to their own `docs/proposals/` when they
+are.

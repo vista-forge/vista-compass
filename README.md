@@ -193,6 +193,16 @@ documentation cross-links. The release is pinned by checksum in this repo
 and verified on every load — Compass never invents, re-derives, or edits
 data, and it never touches a live VistA system.
 
+## Documentation
+
+| Doc | For |
+|---|---|
+| [`docs/user-guide.md`](docs/user-guide.md) | End users — install, first run, every feature, the Atlas integration, troubleshooting |
+| [`docs/planning-guide.md`](docs/planning-guide.md) | Roadmap — Compass's forward plan, the wider VistA tool family, and recommended features/bugfixes |
+| [`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md) | What has landed, phase by phase (P1–P5) |
+| [`docs/changelog.md`](docs/changelog.md) | Chronological narrative of *why* each change happened |
+| [`node-dev-guide.md`](node-dev-guide.md) | Full development practices for this repo |
+
 ## Development
 
 ```bash
@@ -201,10 +211,6 @@ make check           # lint + typecheck + tests with coverage + audit
 npm run test:vscode  # end-to-end smoke inside the installed VSCode
 npm run vsix         # package the extension
 ```
-
-See [`node-dev-guide.md`](node-dev-guide.md) for the full development
-practices, and [`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md)
-for the build tracker.
 
 ## License
 

@@ -9,6 +9,10 @@ Live status of the phased build. Governing design:
 (vista-meta `docs/proposals/`; sequencing §8). Archive this file per the
 org Tier-D rule when the effort lands.
 
+This tracker records what has **landed**; the forward roadmap (remaining
+Compass work, recommended new features, and the wider tool family) lives
+in the [planning guide](planning-guide.md).
+
 ## Phases (proposal §8)
 
 | Phase | Work | Status |
