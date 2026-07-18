@@ -197,8 +197,8 @@ data, and it never touches a live VistA system.
 
 | Doc | For |
 |---|---|
-| [`docs/user-guide.md`](docs/user-guide.md) | End users — install, first run, every feature, the Atlas integration, troubleshooting |
-| [`docs/planning-guide.md`](docs/planning-guide.md) | Roadmap — Compass's forward plan, the wider VistA tool family, and recommended features/bugfixes |
+| [`docs/guides/user-guide.md`](docs/guides/user-guide.md) | End users — install, first run, every feature, the Atlas integration, troubleshooting |
+| [`docs/guides/planning-guide.md`](docs/guides/planning-guide.md) | Roadmap — Compass's forward plan, the wider VistA tool family, and recommended features/bugfixes |
 | [`docs/compass-v2-tracker.md`](docs/compass-v2-tracker.md) | What has landed, phase by phase (P1–P5) |
 | [`docs/changelog.md`](docs/changelog.md) | Chronological narrative of *why* each change happened |
 | [`node-dev-guide.md`](node-dev-guide.md) | Full development practices for this repo |

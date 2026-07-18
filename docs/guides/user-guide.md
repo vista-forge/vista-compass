@@ -3,7 +3,7 @@
 A task-oriented guide to using **VistA Compass v0.4.2**: installation,
 first run, every feature, the VistA Atlas integration, and
 troubleshooting. For the one-page overview and the argument for *why* a
-VistA developer needs this, see the [README](../README.md). For the
+VistA developer needs this, see the [README](../../README.md). For the
 roadmap and the wider tool family, see the
 [planning guide](planning-guide.md).
 

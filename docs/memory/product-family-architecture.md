@@ -33,7 +33,7 @@ knowledge stays in tiers 2–3.
   `~/m-dev-tools/tree-sitter-m-vscode` and is to be promoted into a new
   `vista-forge` non-waterline repo.
 - **Tier 2 roadmap + tier overview** — this repo's
-  [`docs/planning-guide.md`](../planning-guide.md).
+  [`docs/guides/planning-guide.md`](../guides/planning-guide.md).
 - **Tier 3 (VistA helper)** — sketched in the planning guide; migrates to
   its own repo when stood up.
 

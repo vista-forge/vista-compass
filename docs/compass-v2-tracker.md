@@ -11,7 +11,7 @@ org Tier-D rule when the effort lands.
 
 This tracker records what has **landed**; the forward roadmap (remaining
 Compass work, recommended new features, and the wider tool family) lives
-in the [planning guide](planning-guide.md).
+in the [planning guide](guides/planning-guide.md).
 
 ## Phases (proposal §8)
 

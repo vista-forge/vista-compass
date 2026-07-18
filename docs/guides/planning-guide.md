@@ -5,8 +5,8 @@ status: living
 # VistA Compass — Planning Guide
 
 The forward-looking companion to the
-[implementation tracker](compass-v2-tracker.md) (which records what has
-*landed*) and the [changelog](changelog.md) (which records *why* each
+[implementation tracker](../compass-v2-tracker.md) (which records what has
+*landed*) and the [changelog](../changelog.md) (which records *why* each
 change happened). This guide records **where the work is going**:
 Compass's own roadmap, the wider VistA tool family Compass belongs to,
 and the feature/function/bugfix recommendations gathered in the
@@ -66,7 +66,7 @@ uncontested. The job is to widen it, not to defend it.
 ## 2 · Compass: current state
 
 **Shipping: v0.4.2.** Phases P1–P5 have all landed on the Compass side
-(full detail in the [tracker](compass-v2-tracker.md)).
+(full detail in the [tracker](../compass-v2-tracker.md)).
 
 - **P1** — `vista-store` lib (read-only `node:sqlite`, fetch-verify,
   release pins, meta.db contract check) + twin-link contract v1 frozen.

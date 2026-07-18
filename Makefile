@@ -41,7 +41,7 @@ audit: vuln
 vuln:
 	bash ../.github/scripts/vuln-scan.sh .
 
-check: lint typecheck test-cov vuln
+check: lint typecheck test-cov vuln docs-gate
 
 build:
 	$(NPM) run build
@@ -64,3 +64,8 @@ pull:
 
 push: check
 	git push origin main
+
+.PHONY: docs-gate
+docs-gate: ## offline docs link+layout gate (de-GitHub D-1 — replaces the docs-validate.yml cloud workflow)
+	python3 ../.github/scripts/link-check.py $(wildcard docs) $(wildcard README.md) $(wildcard CLAUDE.md)
+	@if [ -d docs ]; then python3 ../.github/scripts/layout-check.py docs; else echo "docs-gate: no docs/ tree — layout gate not applicable (printed, not silent)"; fi

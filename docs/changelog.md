@@ -190,11 +190,11 @@ pins and the shared decision returns no drift.
 
 **Done:**
 
-- Added [`docs/user-guide.md`](user-guide.md) — a task-oriented end-user
+- Added [`docs/user-guide.md`](guides/user-guide.md) — a task-oriented end-user
   guide covering install, first-run data verification, every feature
   (sidebar/hovers/nav/search/dashboard/diagnostics), the Atlas twin
   integration, citations, deep-link URIs, and troubleshooting.
-- Added [`docs/planning-guide.md`](planning-guide.md) — the forward
+- Added [`docs/planning-guide.md`](guides/planning-guide.md) — the forward
   roadmap. Records the three-tier tool family (engine-neutral M tool /
   Compass+Atlas / VistA helper), Compass's own roadmap + recommended new
   features + known-issue watch list, and — captured so nothing is lost —
