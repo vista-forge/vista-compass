@@ -3,7 +3,7 @@
 NPM := npm
 BIN := ./node_modules/.bin
 
-.PHONY: install hooks test test-watch test-cov lint format fix typecheck audit check build run clean push pull log
+.PHONY: install hooks test test-watch test-cov lint format fix typecheck audit vuln check build run clean push pull log
 
 install:
 	$(NPM) install
@@ -33,10 +33,15 @@ fix:
 typecheck:
 	$(NPM) run typecheck
 
-audit:
-	$(NPM) run audit
+# audit is an alias for vuln (kept for muscle memory / CLAUDE.md). The gate is
+# the OFFLINE shared scan (de-GitHub OPTION A; npm audit's registry call is
+# gone from gate time).
+audit: vuln
 
-check: lint typecheck test-cov audit
+vuln:
+	bash ../.github/scripts/vuln-scan.sh .
+
+check: lint typecheck test-cov vuln
 
 build:
 	$(NPM) run build

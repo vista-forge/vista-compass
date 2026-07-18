@@ -42,8 +42,8 @@ make lint        # biome check (linter)
 make format      # biome format --write (auto-format)
 make fix         # biome check --write (lint + format + safe fixes)
 make typecheck   # tsc --noEmit (no JS emitted, types only)
-make audit       # npm audit (high+ severity blocks)
-make check       # lint + typecheck + test-cov + audit (full gate, same as CI)
+make audit       # alias of vuln — offline osv-scanner vs local OSV DBs
+make check       # lint + typecheck + test-cov + vuln (full gate, same as CI)
 make build       # tsc → dist/
 make run         # node --import tsx src/index.ts (dev run, no build)
 make log MSG="…" # append a dated entry to docs/changelog.md
