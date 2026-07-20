@@ -34,7 +34,7 @@ applies.
 
 ## Dev workflow
 ```bash
-make install     # npm install + install simple-git-hooks pre-commit/pre-push
+make install     # npm install (git hooks are org-managed, not per-repo — see Git conventions below)
 make test        # node --test (built-in runner) — fast inner loop
 make test-watch  # TDD mode: re-runs tests on file save
 make test-cov    # coverage with c8 (lcov + summary)
@@ -57,7 +57,10 @@ make pull        # git pull origin main
 - **Biome** is the single tool for linting AND formatting (no ESLint, no Prettier — one Rust-based tool, one config file).
 - **`node:test`** (Node's built-in test runner) is the test framework. No Vitest, no Jest. Tests live next to source: `src/foo.ts` ↔ `src/foo.test.ts`.
 - **`c8`** for coverage (one binary that wraps the runner; no instrumentation step).
-- **`simple-git-hooks`** for pre-commit / pre-push. Zero deps, defined inline in `package.json`.
+- Git hooks are **not** installed per-repo (no `simple-git-hooks`/husky/lefthook) — a
+  per-repo hook installer would write into the org's shared `core.hooksPath`
+  (`~/vista-forge/.github/githooks`) and clobber the canonical pre-push gate for
+  every other repo in the org. See "Git conventions" below.
 
 ## Adding a dependency
 ```bash
@@ -93,7 +96,7 @@ For CLI projects, add `src/cli.ts` with a `#!/usr/bin/env node` shebang, declare
 - Coverage minimum: 80% (enforced via `c8`'s `check-coverage` flag in `package.json` if you want it strict; `make check` reports without failing)
 
 ## Code style
-- Format + lint: `biome` only. Pre-commit hook runs `biome check`.
+- Format + lint: `biome` only.
 - Indent: 2 spaces. Single quotes. Trailing commas everywhere. Always semicolons.
 - Line length: 100. No bikeshed.
 - Imports: `node:` protocol prefix for builtins (`import { strict as assert } from 'node:assert'`). Biome enforces this.
@@ -104,8 +107,14 @@ For CLI projects, add `src/cli.ts` with a `#!/usr/bin/env node` shebang, declare
 
 ## Git conventions
 - Main branch: `main`
-- **Pre-commit hook**: `biome check` + `tsc --noEmit`. Push fails if the hook fails.
-- **Pre-push hook**: `npm run test:cov`. Push fails on test failure or coverage drop.
+- **Hooks are org-managed, not per-repo.** `core.hooksPath` points every repo at
+  the shared `~/vista-forge/.github/githooks`; its `pre-push` runs this repo's
+  `make check` before a push leaves the machine (wired by
+  `.github/scripts/install/install-githooks.sh`). Do **not** add a per-repo hook
+  installer (`simple-git-hooks`, husky, lefthook, `pre-commit install`, …) — it
+  would write into that same shared `core.hooksPath` and overwrite the org-wide
+  gate for every other repo (this happened once, see
+  `~/vista-forge/docs/memory/local-first-ci.md`).
 - **`make push`** runs the full `check` gate (lint + typecheck + test-cov + audit) before pushing.
 - Commit messages: short imperative ("add retry logic", "fix timeout bug")
 - Always commit `package-lock.json` alongside `package.json` changes.

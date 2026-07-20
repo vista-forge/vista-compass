@@ -3,14 +3,16 @@
 NPM := npm
 BIN := ./node_modules/.bin
 
-.PHONY: install hooks test test-watch test-cov lint format fix typecheck audit vuln check build run clean push pull log
+.PHONY: install test test-watch test-cov lint format fix typecheck audit vuln check build run clean push pull log
 
+# Git hooks are NOT managed here — the org's pre-push gate (core.hooksPath ->
+# .github/githooks) already dispatches to `make check` per repo. A per-repo
+# hook installer (simple-git-hooks et al.) would write into that SAME shared
+# hooksPath and clobber the org-wide pre-push gate for every other repo — see
+# ~/vista-forge/docs/memory/local-first-ci.md. Hook install is org-level:
+# .github/scripts/install/install-githooks.sh.
 install:
 	$(NPM) install
-	$(MAKE) hooks
-
-hooks:
-	$(BIN)/simple-git-hooks
 
 test:
 	$(NPM) run test
