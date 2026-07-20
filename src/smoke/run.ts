@@ -32,14 +32,16 @@ writeFileSync(
   }),
 );
 
-// A scratch extensions dir holding ONLY the Atlas twin (symlinked from
-// the real install), so the twin-link seam is exercised without noise
-// from unrelated installed extensions.
+// A scratch extensions dir holding ONLY the Atlas twin and the m-vscode
+// language-id owner (symlinked from the real install) — m-vscode is now a
+// hard extensionDependencies entry (D2, mumps language-id migration), so the
+// smoke host must have it present to activate at all — plus the twin-link
+// seam, exercised without noise from unrelated installed extensions.
 const extensionsDir = join(workspace, 'extensions');
 mkdirSync(extensionsDir, { recursive: true });
 const realExtensions = join(homedir(), '.vscode/extensions');
 for (const entry of readdirSync(realExtensions)) {
-  if (entry.startsWith('vista-forge.vista-atlas-')) {
+  if (entry.startsWith('vista-forge.vista-atlas-') || entry.startsWith('vista-forge.m-vscode-')) {
     symlinkSync(join(realExtensions, entry), join(extensionsDir, entry));
   }
 }

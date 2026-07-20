@@ -1,6 +1,6 @@
 {
   "name": "vista-compass",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "VistA Compass \u2014 VSCode extension over the vista-meta data release (meta.db): call graph, PIKS, RPCs/options/protocols, package topology, XINDEX. What the system measurably IS.",
   "type": "module",
   "main": "./dist/extension.cjs",
@@ -15,7 +15,6 @@
     "dist",
     "contracts",
     "images",
-    "language-configuration.json",
     "README.md",
     "LICENSE"
   ],
@@ -71,6 +70,9 @@
   "activationEvents": [
     "workspaceContains:**/*.m",
     "onLanguage:mumps"
+  ],
+  "extensionDependencies": [
+    "vista-forge.m-vscode"
   ],
   "contributes": {
     "views": {
@@ -129,19 +131,6 @@
         }
       ]
     },
-    "languages": [
-      {
-        "id": "mumps",
-        "aliases": [
-          "MUMPS",
-          "M"
-        ],
-        "extensions": [
-          ".m"
-        ],
-        "configuration": "./language-configuration.json"
-      }
-    ],
     "configuration": {
       "title": "VistA Compass",
       "properties": {

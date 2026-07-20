@@ -210,3 +210,7 @@ pins and the shared decision returns no drift.
 bump. The sibling-effort plans live here for now because those repos are
 not yet stood up; they migrate to their own `docs/proposals/` when they
 are.
+
+## 2026-07-20
+
+drop base mumps language registration (D2, pure-m-vscode P1b) — m-vscode (vista-forge.m-vscode) is now sole owner of contributes.languages id:mumps + language-configuration.json, preventing the silent-drift class where two extensions registering the same language id leave VS Code to pick one language-configuration nondeterministically. Compass keeps hover/diagnostics/the routine tree view and its onLanguage:mumps activation (fires regardless of which extension registered the id) and adds extensionDependencies: [vista-forge.m-vscode] rather than an extensionPack — compass functionally REQUIRES the id (hover/tree-view selectors target language:'mumps'), so a hard dependency (VS Code installs/activates it together, errors if missing) is the correct expression, not a soft bundling recommendation. language-configuration.json removed from the repo (m-vscode ships its own, extensions .m/.mac/.int, a superset of compass's old .m-only). Smoke harness (src/smoke/run.ts) now also symlinks the m-vscode twin into its scratch extensions dir so activation succeeds under the new hard dependency. Repackaged .vsix; verified unzipped extension/package.json no longer contains contributes.languages. v0.4.2 -> v0.5.0 (minor: manifest contract change, D2 ruling).
